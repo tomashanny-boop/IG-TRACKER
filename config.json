@@ -1,0 +1,35 @@
+{
+  "accounts": [
+    {"username": "cmcarchitects", "type": "own"},
+
+    {"username": "a8000.cz", "type": "foreign"},
+    {"username": "a69_architekti", "type": "foreign"},
+    {"username": "atelier_ra15", "type": "foreign"},
+    {"username": "qartaarch", "type": "foreign"},
+    {"username": "studio_perspektiv", "type": "foreign"},
+    {"username": "editarchitects", "type": "foreign"},
+    {"username": "ova_architekti", "type": "foreign"},
+    {"username": "chybikkristof", "type": "foreign"},
+    {"username": "adr_architects", "type": "foreign"},
+    {"username": "dam.architekti", "type": "foreign"},
+    {"username": "jakub_cigler_architekti", "type": "foreign"},
+    {"username": "adns.architekti", "type": "foreign"}
+  ],
+
+  "graph_api": {
+    "_note": "IG user id není tajné, klidně ho commitněte do repa. Access token se NIKDY nedává do tohoto souboru - čte se z GitHub Secret GRAPH_ACCESS_TOKEN.",
+    "ig_user_ids": {
+      "cmcarchitects": "VLOŽTE_IG_USER_ID"
+    }
+  },
+
+  "instaloader_login": {
+    "_note": "Heslo se NIKDY nedává do tohoto souboru - čte se z GitHub Secret IG_SCRAPER_PASSWORD.",
+    "username": "VLOŽTE_USERNAME_SCRAPER_UCTU"
+  },
+
+  "delay_seconds_between_foreign_requests": {
+    "min": 20,
+    "max": 60
+  }
+}
