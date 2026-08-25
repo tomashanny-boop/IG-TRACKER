@@ -1,0 +1,41 @@
+name: Měsíční sběr IG followers
+
+on:
+  schedule:
+    - cron: "0 9 1 * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repozitáře
+        uses: actions/checkout@v4
+
+      - name: Nastavit Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalovat závislosti
+        run: pip install -r requirements.txt
+
+      - name: Stáhnout aktuální počty sledujících
+        env:
+          GRAPH_ACCESS_TOKEN: ${{ secrets.GRAPH_ACCESS_TOKEN }}
+          IG_SCRAPER_PASSWORD: ${{ secrets.IG_SCRAPER_PASSWORD }}
+        run: python run_monthly.py
+
+      - name: Vygenerovat REPORT.md
+        run: python export_report_md.py
+
+      - name: Commitnout nová data zpět do repa
+        run: |
+          git config user.name "ig-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add followers.db REPORT.md
+          git diff --staged --quiet || git commit -m "Měsíční aktualizace followers ($(date -u +%Y-%m-%d))"
+          git push
