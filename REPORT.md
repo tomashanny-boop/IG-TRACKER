@@ -10,7 +10,7 @@ _Poslední aktualizace: 2026-08-26_
 | adr_architects | foreign | 2026-08-01 | 3236 | +9 |
 | atelier_ra15 | foreign | 2026-08-01 | 1687 | +64 |
 | chybikkristof | foreign | 2026-08-01 | 19400 | +100 |
-| cmcarchitects | foreign | 2026-08-01 | 2117 | +32 |
+| cmcarchitects | own | 2026-08-01 | 2117 | +32 |
 | dam.architekti | foreign | 2026-08-01 | 2734 | +17 |
 | editarchitects | foreign | 2026-08-01 | 7621 | +41 |
 | jakub_cigler_architekti | foreign | 2026-08-01 | 2073 | +20 |

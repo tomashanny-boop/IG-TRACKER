@@ -1,6 +1,24 @@
 {
-  "generated_at": "2026-08-26 12:24 UTC",
+  "generated_at": "2026-08-26 12:43 UTC",
   "accounts": [
+    {
+      "username": "cmcarchitects",
+      "type": "own",
+      "history": [
+        {
+          "date": "2026-07-01",
+          "followers": 2085,
+          "posts": null
+        },
+        {
+          "date": "2026-08-01",
+          "followers": 2117,
+          "posts": 84
+        }
+      ],
+      "latest": 2117,
+      "delta": 32
+    },
     {
       "username": "a69_architekti",
       "type": "foreign",
@@ -108,24 +126,6 @@
       ],
       "latest": 19400,
       "delta": 100
-    },
-    {
-      "username": "cmcarchitects",
-      "type": "foreign",
-      "history": [
-        {
-          "date": "2026-07-01",
-          "followers": 2085,
-          "posts": null
-        },
-        {
-          "date": "2026-08-01",
-          "followers": 2117,
-          "posts": 84
-        }
-      ],
-      "latest": 2117,
-      "delta": 32
     },
     {
       "username": "dam.architekti",
