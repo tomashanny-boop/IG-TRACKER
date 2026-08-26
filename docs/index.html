@@ -477,15 +477,25 @@
 
       // sloupec 3 — příspěvky za měsíc + celkem
       const postsCell = document.createElement('span');
-      if(acc._postsMonth === null || acc._postsMonth === undefined){
+      const hasMonth = acc._postsMonth !== null && acc._postsMonth !== undefined;
+      const hasTotal = acc._postsTotal !== null && acc._postsTotal !== undefined;
+
+      if(!hasMonth && !hasTotal){
         postsCell.className = 'posts empty';
         postsCell.textContent = '—';
       } else {
         postsCell.className = 'posts';
         const pm = document.createElement('span');
-        pm.textContent = acc._postsMonth;
+        if(hasMonth){
+          pm.textContent = acc._postsMonth;
+        } else {
+          pm.textContent = '—';
+          pm.style.color = 'var(--ink-faint)';
+          postsCell.title = 'Měsíční přírůstek se zobrazí, jakmile budou příspěvky ve dvou po sobě jdoucích měřeních.';
+        }
         postsCell.appendChild(pm);
-        if(acc._postsTotal !== null && acc._postsTotal !== undefined){
+
+        if(hasTotal){
           const tot = document.createElement('span');
           tot.className = 'total';
           tot.textContent = fmtNum(acc._postsTotal) + ' celkem';
