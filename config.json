@@ -16,11 +16,7 @@
     {"username": "adns.architekti", "type": "foreign"}
   ],
 
-  "graph_api": {
-    "_note": "IG user id není tajné, klidně ho commitněte do repa. Access token se NIKDY nedává do tohoto souboru - čte se z GitHub Secret GRAPH_ACCESS_TOKEN.",
-    "ig_user_ids": {
-      "cmcarchitects": "VLOŽTE_IG_USER_ID"
-    }
+  
   },
 
   "instaloader_login": {
