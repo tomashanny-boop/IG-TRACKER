@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IG Tracker — ruční zápis</title>
+<style>
+  :root{
+    --paper:#FFFFFF; --line:#DEDDDA; --line-strong:#111111;
+    --ink:#111111; --ink-muted:#6E6E6C; --ink-faint:#A6A5A2;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; min-height:100vh; background:#fff; color:var(--ink);
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{ max-width:900px; margin:0 auto; padding:28px 20px 80px; }
+  .eyebrow{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px;
+    letter-spacing:.18em; text-transform:uppercase; color:var(--ink-muted); margin:0 0 10px;
+  }
+  h1{ font-weight:700; font-size:clamp(26px,4vw,36px); letter-spacing:-.02em; margin:0 0 8px; }
+  .sub{ color:var(--ink-muted); font-size:15px; margin:0 0 28px; max-width:60ch; }
+  a{ color:var(--ink); }
+
+  .panel{ border:1px solid var(--line-strong); background:var(--paper); margin-bottom:20px; }
+  .panel-head{
+    padding:18px 24px; border-bottom:1px solid var(--line);
+    display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .panel-head h2{ font-size:15px; font-weight:600; margin:0; }
+  .panel-body{ padding:20px 24px; }
+
+  .datefield{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  label{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--ink-muted); }
+  input[type="date"], input[type="number"]{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:14px;
+    padding:8px 10px; border:1px solid var(--line); background:#fff; color:var(--ink);
+  }
+  input[type="number"]{ width:100%; text-align:right; }
+  input:focus{ outline:2px solid var(--ink); outline-offset:-1px; }
+
+  table{ width:100%; border-collapse:collapse; }
+  th{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10px;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--ink-muted);
+    text-align:right; font-weight:400; padding:0 0 10px; border-bottom:1px solid var(--line);
+  }
+  th:first-child{ text-align:left; }
+  td{ padding:10px 0; border-bottom:1px solid var(--line); vertical-align:middle; }
+  td:first-child{ padding-right:16px; }
+  td.numcell{ width:130px; padding-left:12px; }
+  .acct{ font-size:14px; }
+  .prev{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px;
+    color:var(--ink-faint); display:block; margin-top:2px;
+  }
+  .iglink{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px;
+    color:var(--ink-faint); text-decoration:none; margin-left:6px; }
+  .iglink:hover{ color:var(--ink); text-decoration:underline; }
+
+  button{
+    font-family:"Inter",sans-serif; font-size:14px; font-weight:600;
+    padding:11px 20px; border:1px solid var(--ink); background:var(--ink); color:#fff; cursor:pointer;
+  }
+  button.secondary{ background:#fff; color:var(--ink); }
+  button:hover{ opacity:.85; }
+
+  textarea{
+    width:100%; min-height:260px; font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:12px; line-height:1.45; padding:14px; border:1px solid var(--line);
+    background:#FAFAF9; color:var(--ink); resize:vertical;
+  }
+  .steps{ font-size:14px; color:var(--ink-muted); line-height:1.6; margin:0 0 16px; padding-left:20px; }
+  .steps code{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12.5px;
+    background:#F2F2F0; padding:1px 5px; color:var(--ink); }
+  .note{ font-size:13px; color:var(--ink-muted); margin:14px 0 0; }
+  .backlink{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px;
+    color:var(--ink-muted); text-decoration:none; }
+  .hidden{ display:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="backlink" href="./">← zpět na přehled</a>
+  <p class="eyebrow" style="margin-top:18px;">IG Tracker / ruční zápis</p>
+  <h1>Zápis měsíčních hodnot</h1>
+  <p class="sub">Otevřete si každý profil, opište počet sledujících a počet příspěvků. Formulář z toho vygeneruje text, který jen vložíte do souboru <code>manual_entries.json</code> na GitHubu — web se pak aktualizuje sám.</p>
+
+  <div class="panel">
+    <div class="panel-head"><h2>1. Datum měření</h2></div>
+    <div class="panel-body">
+      <div class="datefield">
+        <label for="datum">Datum</label>
+        <input type="date" id="datum">
+        <span class="note" style="margin:0;">Měří se vždy 1. den v měsíci.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h2>2. Hodnoty</h2>
+      <span class="note" style="margin:0;">Prázdné pole = záznam se pro daný účet nevytvoří.</span>
+    </div>
+    <div class="panel-body">
+      <table>
+        <thead>
+          <tr><th>Účet</th><th>Sledující</th><th>Příspěvky</th></tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>3. Vygenerovat</h2></div>
+    <div class="panel-body">
+      <button id="gen" type="button">Vygenerovat text</button>
+      <div id="output" class="hidden" style="margin-top:20px;">
+        <ol class="steps">
+          <li>Zkopírujte celý text níže.</li>
+          <li>Na GitHubu otevřete soubor <code>manual_entries.json</code> a klikněte na tužku.</li>
+          <li>Označte všechno (Cmd+A) a vložte tento text.</li>
+          <li>Dole <strong>Commit changes</strong> → potvrdit.</li>
+        </ol>
+        <textarea id="out" readonly></textarea>
+        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+          <button id="copy" type="button" class="secondary">Zkopírovat do schránky</button>
+          <span class="note" id="copied" style="margin:0; align-self:center;"></span>
+        </div>
+        <p class="note">Po uložení na GitHubu se do dvou minut přepočítá i webový přehled.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(async function(){
+  const rowsEl = document.getElementById('rows');
+  const dateEl = document.getElementById('datum');
+
+  // výchozí datum = 1. den aktuálního měsíce
+  const now = new Date();
+  dateEl.value = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-01';
+
+  let existing = {};
+  let accounts = [];
+
+  try{
+    const r1 = await fetch('manual_entries.json?v=' + Date.now());
+    if(r1.ok) existing = await r1.json();
+  }catch(e){ /* soubor nemusí být dostupný, nevadí */ }
+
+  try{
+    const r2 = await fetch('data.json?v=' + Date.now());
+    if(r2.ok){
+      const d = await r2.json();
+      accounts = (d.accounts || []).map(a => ({
+        username: a.username,
+        lastFollowers: a.latest,
+        lastPosts: (a.history && a.history.length) ? a.history[a.history.length-1].posts : null,
+        lastDate: (a.history && a.history.length) ? a.history[a.history.length-1].date : null
+      }));
+    }
+  }catch(e){ /* fallback níže */ }
+
+  if(accounts.length === 0){
+    rowsEl.innerHTML = '<tr><td colspan="3" style="padding:24px 0; color:#6E6E6C;">Seznam účtů se nepodařilo načíst.</td></tr>';
+    return;
+  }
+
+  accounts.forEach(acc => {
+    const tr = document.createElement('tr');
+
+    const tdName = document.createElement('td');
+    const name = document.createElement('span');
+    name.className = 'acct';
+    name.textContent = acc.username;
+    tdName.appendChild(name);
+
+    const link = document.createElement('a');
+    link.className = 'iglink';
+    link.href = 'https://www.instagram.com/' + acc.username + '/';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = '↗ otevřít';
+    tdName.appendChild(link);
+
+    if(acc.lastFollowers !== null && acc.lastFollowers !== undefined){
+      const prev = document.createElement('span');
+      prev.className = 'prev';
+      prev.textContent = 'naposled ' + Number(acc.lastFollowers).toLocaleString('cs-CZ')
+        + (acc.lastPosts !== null && acc.lastPosts !== undefined ? ' · ' + acc.lastPosts + ' přísp.' : '')
+        + (acc.lastDate ? ' (' + acc.lastDate + ')' : '');
+      tdName.appendChild(prev);
+    }
+
+    const tdF = document.createElement('td');
+    tdF.className = 'numcell';
+    const inF = document.createElement('input');
+    inF.type = 'number'; inF.min = '0'; inF.dataset.user = acc.username; inF.dataset.kind = 'followers';
+    inF.placeholder = '—';
+    tdF.appendChild(inF);
+
+    const tdP = document.createElement('td');
+    tdP.className = 'numcell';
+    const inP = document.createElement('input');
+    inP.type = 'number'; inP.min = '0'; inP.dataset.user = acc.username; inP.dataset.kind = 'posts';
+    inP.placeholder = '—';
+    tdP.appendChild(inP);
+
+    tr.appendChild(tdName); tr.appendChild(tdF); tr.appendChild(tdP);
+    rowsEl.appendChild(tr);
+  });
+
+  document.getElementById('gen').addEventListener('click', () => {
+    const date = dateEl.value;
+    if(!date){ alert('Vyplňte datum měření.'); return; }
+
+    const merged = JSON.parse(JSON.stringify(existing));
+    const bucket = {};
+
+    document.querySelectorAll('input[data-kind="followers"]').forEach(inp => {
+      const user = inp.dataset.user;
+      const f = inp.value.trim();
+      if(f === '') return;
+      const pInp = document.querySelector('input[data-kind="posts"][data-user="' + CSS.escape(user) + '"]');
+      const p = pInp && pInp.value.trim() !== '' ? parseInt(pInp.value, 10) : null;
+      bucket[user] = { followers: parseInt(f, 10), posts: p };
+    });
+
+    if(Object.keys(bucket).length === 0){
+      alert('Nevyplnili jste žádnou hodnotu.');
+      return;
+    }
+
+    merged[date] = Object.assign({}, merged[date] || {}, bucket);
+
+    // seřadit podle data, ať soubor zůstává přehledný
+    const ordered = {};
+    Object.keys(merged).sort().forEach(d => { ordered[d] = merged[d]; });
+
+    document.getElementById('out').value = JSON.stringify(ordered, null, 2);
+    document.getElementById('output').classList.remove('hidden');
+    document.getElementById('output').scrollIntoView({ behavior:'smooth', block:'nearest' });
+  });
+
+  document.getElementById('copy').addEventListener('click', async () => {
+    const ta = document.getElementById('out');
+    try{
+      await navigator.clipboard.writeText(ta.value);
+      document.getElementById('copied').textContent = 'Zkopírováno.';
+    }catch(e){
+      ta.select();
+      document.getElementById('copied').textContent = 'Zkopírujte prosím ručně (Cmd+C).';
+    }
+    setTimeout(() => { document.getElementById('copied').textContent = ''; }, 3000);
+  });
+})();
+</script>
+</body>
+</html>
