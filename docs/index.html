@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>IG Tracker — přehled sledujících</title>
+<title>Instagram Tracker — přehled sledujících</title>
 <style>
   :root{
     --bg: #FAFAF9;
@@ -251,8 +251,7 @@
 
   <div class="titleblock">
     <div class="titleblock-main">
-      <p class="eyebrow">Sledování / Instagram / Konkurence</p>
-      <h1>IG Tracker</h1>
+      <h1>Instagram Tracker</h1>
       <p class="titleblock-sub">Měsíční přehled počtu sledujících u vlastního účtu a konkurenčních architektonických studií.</p>
     </div>
     <div class="meta-grid">
@@ -377,7 +376,7 @@
   document.getElementById('meta-count').textContent = accounts.length;
   document.getElementById('meta-own').textContent = accounts.filter(a => a.type === 'own').length;
   document.getElementById('meta-foreign').textContent = accounts.filter(a => a.type === 'foreign').length;
-  document.getElementById('meta-updated').textContent = (data && data.generated_at) || '—';
+  document.getElementById('meta-updated').textContent = formatUpdated(data && data.generated_at);
   document.getElementById('panel-count').textContent = accounts.length + ' celkem';
 
   let sortKey = 'latest';
