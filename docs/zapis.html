@@ -87,7 +87,7 @@
   <a class="backlink" href="./">← zpět na přehled</a>
   <p class="eyebrow" style="margin-top:18px;">IG Tracker / ruční zápis</p>
   <h1>Zápis měsíčních hodnot</h1>
-  <p class="sub">Otevřete si každý profil, opište počet sledujících a počet příspěvků. Formulář z toho vygeneruje text, který jen vložíte do souboru <code>manual_entries.json</code> na GitHubu — web se pak aktualizuje sám.</p>
+  <p class="sub">Otevřete si každý profil a opište počet sledujících a počet příspěvků. Pokud pro dané datum už některou hodnotu máte, můžete pole nechat prázdné. Formulář z toho vygeneruje text, který jen vložíte do souboru <code>manual_entries.json</code> na GitHubu — web se pak aktualizuje sám.</p>
 
   <div class="panel">
     <div class="panel-head"><h2>1. Datum měření</h2></div>
@@ -103,7 +103,7 @@
   <div class="panel">
     <div class="panel-head">
       <h2>2. Hodnoty</h2>
-      <span class="note" style="margin:0;">Prázdné pole = záznam se pro daný účet nevytvoří.</span>
+      <span class="note" style="margin:0;">Stačí vyplnit, co je nové — chybějící hodnota se převezme z dřívějšího zápisu.</span>
     </div>
     <div class="panel-body">
       <table>
@@ -222,15 +222,48 @@
 
     const merged = JSON.parse(JSON.stringify(existing));
     const bucket = {};
+    const skipped = [];
 
     document.querySelectorAll('input[data-kind="followers"]').forEach(inp => {
       const user = inp.dataset.user;
       const f = inp.value.trim();
-      if(f === '') return;
       const pInp = document.querySelector('input[data-kind="posts"][data-user="' + CSS.escape(user) + '"]');
-      const p = pInp && pInp.value.trim() !== '' ? parseInt(pInp.value, 10) : null;
-      bucket[user] = { followers: parseInt(f, 10), posts: p };
+      const pRaw = pInp ? pInp.value.trim() : '';
+
+      // nic nevyplněno -> účet vynechat
+      if(f === '' && pRaw === '') return;
+
+      const prevEntry = (existing[date] && existing[date][user]) || null;
+
+      // sledující: buď nově zadané, nebo už dřív uložené pro toto datum
+      let followers;
+      if(f !== ''){
+        followers = parseInt(f, 10);
+      } else if(prevEntry && prevEntry.followers !== null && prevEntry.followers !== undefined){
+        followers = prevEntry.followers;
+      } else {
+        // pro toto datum nemáme počet sledujících a nebyl zadán -> nelze uložit
+        skipped.push(user);
+        return;
+      }
+
+      // příspěvky: nově zadané, jinak zachovat dřívější hodnotu
+      let posts = null;
+      if(pRaw !== ''){
+        posts = parseInt(pRaw, 10);
+      } else if(prevEntry && prevEntry.posts !== null && prevEntry.posts !== undefined){
+        posts = prevEntry.posts;
+      }
+
+      bucket[user] = { followers: followers, posts: posts };
     });
+
+    if(skipped.length){
+      alert('U těchto účtů chybí počet sledujících pro zvolené datum, takže je nelze uložit:\n\n'
+            + skipped.join(', ')
+            + '\n\nDoplňte prosím i sledující, nebo pole nechte úplně prázdná.');
+      return;
+    }
 
     if(Object.keys(bucket).length === 0){
       alert('Nevyplnili jste žádnou hodnotu.');
