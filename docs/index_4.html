@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Instagram Tracker — přehled sledujících</title>
+<style>
+  :root{
+    --bg: #FAFAF9;
+    --paper: #FFFFFF;
+    --line: #DEDDDA;
+    --line-strong: #111111;
+    --ink: #111111;
+    --ink-muted: #6E6E6C;
+    --ink-faint: #A6A5A2;
+    --bar: #6E7B3F;
+    --bar-neg: #C9CDB4;
+    --green: #6E7B3F;
+    --green-deep: #4F5A2B;
+    --green-soft: #EEF0E4;
+    --green-line: #C9CDB4;
+  }
+
+  *{ box-sizing: border-box; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+
+  body{
+    margin: 0;
+    min-height: 100vh;
+    background-color: #FFFFFF;
+    color: var(--ink);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a{ color: inherit; }
+  ::selection{ background: var(--ink); color: var(--paper); }
+  :focus-visible{ outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  .wrap{ max-width: 1240px; margin: 0 auto; padding: 28px 20px 80px; }
+
+  .titleblock{
+    border: 1px solid var(--line-strong);
+    background: var(--paper);
+    display: grid;
+    grid-template-columns: 1fr;
+    margin-bottom: 32px;
+  }
+  @media (min-width: 720px){ .titleblock{ grid-template-columns: 1.4fr 1fr; } }
+
+  .titleblock-main{ padding: 28px 26px; border-bottom: 1px solid var(--line); }
+  @media (min-width: 720px){
+    .titleblock-main{ border-bottom: none; border-right: 1px solid var(--line); }
+  }
+
+  .eyebrow{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-muted); margin: 0 0 10px;
+  }
+
+  h1{ font-weight: 700; font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.02em; margin: 0 0 8px; }
+
+  .titleblock-sub{ color: var(--ink-muted); font-size: 15px; margin: 0; max-width: 46ch; }
+
+  .meta-grid{ display: grid; grid-template-columns: 1fr 1fr; }
+  .meta-cell{ padding: 16px 20px; border-bottom: 1px solid var(--line); }
+  .meta-cell:nth-child(odd){ border-right: 1px solid var(--line); }
+  .meta-cell:nth-last-child(-n+2){ border-bottom: none; }
+  .meta-label{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-muted); margin: 0 0 6px;
+  }
+  .meta-value{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-weight: 500; font-size: 22px; margin: 0;
+  }
+
+  .grid{ display: grid; grid-template-columns: 1fr; gap: 20px; }
+  @media (min-width: 980px){ .grid{ grid-template-columns: 1.55fr 1fr; align-items: start; } }
+
+  .panel{ border: 1px solid var(--line-strong); background: var(--paper); }
+  .rightcol{ display: grid; gap: 20px; align-content: start; }
+
+  .bar-label{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 15px; font-weight: 600; fill: var(--green-deep);
+  }
+  .bar-value{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px; fill: var(--ink-muted);
+  }
+
+  .panel-head{
+    padding: 18px 26px; border-bottom: 1px solid var(--green-line);
+    display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  }
+  .panel-head h2{ font-size: 15px; font-weight: 600; margin: 0; letter-spacing: 0.01em; }
+  .panel-head .count{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px; color: var(--ink-muted);
+  }
+
+  /* --- řadicí hlavička --- */
+  .sortbar{
+    display: grid;
+    grid-template-columns: minmax(0,1fr) 90px 92px 124px 124px;
+    gap: 18px;
+    padding: 11px 26px;
+    border-bottom: 1px solid var(--line);
+    background: #FBFBFA;
+  }
+  .sortbtn{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    background: none; border: none; padding: 2px 0; margin: 0;
+    color: var(--ink-muted); cursor: pointer; text-align: right; white-space: nowrap;
+  }
+  .sortbtn:first-child{ text-align: left; }
+  .sortbtn:hover{ color: var(--ink); }
+  .sortbtn[aria-sort="true"]{ color: var(--green-deep); font-weight: 600; }
+  .sortbtn .arrow{ opacity: 0; }
+  .sortbtn[aria-sort="true"] .arrow{ opacity: 1; }
+
+  /* --- řádky účtů --- */
+  .acct-list{ list-style: none; margin: 0; padding: 0; }
+  .acct-row{
+    display: grid;
+    grid-template-columns: minmax(0,1fr) 90px 92px 124px 124px;
+    gap: 18px;
+    align-items: center;
+    width: 100%;
+    padding: 16px 26px;
+    border: none; border-bottom: 1px solid var(--line);
+    background: transparent; color: inherit; font: inherit;
+    text-align: left; cursor: pointer;
+  }
+  .acct-list li:last-child .acct-row{ border-bottom: none; }
+  .acct-row:hover{ background: #F7F7F6; }
+  .acct-row[aria-current="true"]{ background: #F4F4F3; }
+
+  /* vlastní účet je vždy vizuálně odlišený, i když není vybraný */
+  .acct-row.is-own{ background: var(--green-soft); }
+  .acct-row.is-own:hover{ background: #E6E9D8; }
+  .acct-row.is-own[aria-current="true"]{ background: #E6E9D8; }
+  .acct-row.is-own .acct-name{ font-weight: 600; }
+
+  .name-cell{ display: flex; align-items: baseline; gap: 8px; min-width: 0; flex-wrap: wrap; row-gap: 4px; }
+  .acct-tag{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 2px 5px; border: 1px solid var(--green); color: #fff; background: var(--green); white-space: nowrap; flex: none;
+  }
+  .acct-name{ font-size: 14px; white-space: normal; overflow-wrap: anywhere; line-height: 1.3; }
+  .ig-link{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px; color: var(--ink-faint); text-decoration: none; flex: none;
+    padding: 0 2px;
+  }
+  .ig-link:hover{ color: var(--green-deep); text-decoration: underline; }
+
+  .num{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 13px; text-align: right; white-space: nowrap;
+  }
+  .num.muted{ color: var(--ink-muted); }
+  .posts{
+    display: flex; flex-direction: column; align-items: flex-end; gap: 3px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 13px; white-space: nowrap; width: 100%; line-height: 1.25;
+  }
+  .posts .total{ font-size: 10.5px; color: var(--ink-faint); }
+  .posts.empty{ color: var(--ink-faint); font-size: 11px; }
+
+  .delta{
+    display: flex; flex-direction: column; align-items: flex-end; gap: 3px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 13px; white-space: nowrap; width: 100%; line-height: 1.25;
+  }
+  .delta .pct{ font-size: 10.5px; color: var(--ink-faint); letter-spacing: 0.02em; }
+  .delta.up{ color: var(--green-deep); font-weight: 600; }
+  .delta.down{ color: var(--ink-muted); }
+  .delta.flat{ color: var(--ink-faint); }
+  .delta.none{ color: var(--ink-faint); font-size: 11px; }
+  .delta.missing{ color: var(--ink-faint); font-size: 11px; }
+
+  /* --- graf --- */
+  .chart-area{ padding: 26px; }
+  .chart-caption{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px; color: var(--ink-muted); margin: 12px 0 0;
+  }
+  .legend{
+    display: flex; gap: 16px; flex-wrap: wrap;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px; color: var(--ink-muted);
+    margin: 10px 0 0;
+  }
+  .legend span{ display: inline-flex; align-items: center; gap: 6px; }
+  .swatch{ width: 18px; height: 0; border-top: 1.75px solid var(--ink); flex: none; }
+  .swatch.ref{ border-top: 1.75px dashed var(--green); }
+  svg{ display: block; width: 100%; height: auto; }
+  .ax-label{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10px; fill: var(--ink-muted);
+  }
+
+  .empty-state{ padding: 40px 20px; text-align: center; color: var(--ink-muted); font-size: 14px; }
+
+  .actionbar{
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+  }
+  .btn-zapis{
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: "Inter", sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 14px 26px;
+    background: var(--green);
+    color: #fff;
+    border: 1px solid var(--green);
+    text-decoration: none;
+    transition: background .15s ease;
+  }
+  .btn-zapis:hover{ background: var(--green-deep); border-color: var(--green-deep); }
+  .btn-zapis .sub{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 400;
+    opacity: .8;
+    letter-spacing: .04em;
+  }
+
+  footer{
+    margin-top: 20px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px; color: var(--ink-faint); text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="titleblock">
+    <div class="titleblock-main">
+      <h1>Instagram Tracker</h1>
+      <p class="titleblock-sub">Měsíční přehled počtu sledujících u vlastního účtu a konkurenčních architektonických studií.</p>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-cell">
+        <p class="meta-label">Sledovaných účtů</p>
+        <p class="meta-value" id="meta-count">—</p>
+      </div>
+      <div class="meta-cell">
+        <p class="meta-label">Vlastní</p>
+        <p class="meta-value" id="meta-own" style="color:var(--green-deep);">—</p>
+      </div>
+      <div class="meta-cell">
+        <p class="meta-label">Konkurence</p>
+        <p class="meta-value" id="meta-foreign">—</p>
+      </div>
+      <div class="meta-cell">
+        <p class="meta-label">Aktualizováno</p>
+        <p class="meta-value" id="meta-updated" style="font-size:15px;">—</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" id="grid">
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Účty</h2>
+        <span class="count" id="panel-count"></span>
+      </div>
+      <div class="sortbar" id="sortbar">
+        <button class="sortbtn" data-sort="name" type="button">Účet <span class="arrow">↑</span></button>
+        <button class="sortbtn" data-sort="latest" type="button">Sledující <span class="arrow">↓</span></button>
+        <button class="sortbtn" data-sort="postsmo" type="button">Příspěvků/měs. <span class="arrow">↓</span></button>
+        <button class="sortbtn" data-sort="delta" type="button">Za měsíc <span class="arrow">↓</span></button>
+        <button class="sortbtn" data-sort="delta3" type="button">3 měs. <span class="arrow">↓</span></button>
+      </div>
+      <ul class="acct-list" id="acct-list"></ul>
+    </section>
+
+    <div class="rightcol">
+      <section class="panel">
+        <div class="panel-head">
+          <h2 id="chart-title">Vývoj v čase</h2>
+        </div>
+        <div class="chart-area">
+          <div id="chart" role="img" aria-label="Graf vývoje počtu sledujících"></div>
+          <div class="legend" id="legend"></div>
+          <p class="chart-caption" id="chart-caption">Vyberte účet pro zobrazení historie.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2 id="bars-title">Přírůstek sledujících po měsících</h2>
+        </div>
+        <div class="chart-area">
+          <div id="bars" role="img" aria-label="Sloupcový graf měsíčních přírůstků"></div>
+          <p class="chart-caption" id="bars-caption"></p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="actionbar">
+    <a class="btn-zapis" href="zapis.html">
+      Zapsat měsíční hodnoty
+      <span class="sub">→ formulář</span>
+    </a>
+  </div>
+
+  <footer>Data se aktualizují automaticky jednou měsíčně přes GitHub Actions.</footer>
+</div>
+
+<script>
+(async function(){
+  const listEl = document.getElementById('acct-list');
+  const chartTitle = document.getElementById('chart-title');
+  const chartCaption = document.getElementById('chart-caption');
+  const chartEl = document.getElementById('chart');
+  const legendEl = document.getElementById('legend');
+  const barsEl = document.getElementById('bars');
+  const barsTitle = document.getElementById('bars-title');
+  const barsCaption = document.getElementById('bars-caption');
+
+  let data;
+  try{
+    const res = await fetch('data.json', { cache: 'no-store' });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    data = await res.json();
+  }catch(err){
+    document.getElementById('grid').innerHTML =
+      '<div class="panel"><div class="empty-state">' +
+      'Data se ještě nepodařilo načíst.<br>' +
+      'Po prvním úspěšném běhu workflow se stránka naplní automaticky.' +
+      '</div></div>';
+    return;
+  }
+
+  const accounts = (data && data.accounts) || [];
+  const ownAccount = accounts.find(a => a.type === 'own') || null;
+
+  // poslední datum napříč všemi účty — pro detekci chybějícího záznamu
+  let latestDateAll = '';
+  accounts.forEach(a => {
+    (a.history || []).forEach(h => { if(h.date > latestDateAll) latestDateAll = h.date; });
+  });
+
+  // předpočítat metriky
+  accounts.forEach(a => {
+    const h = a.history || [];
+    a._n = h.length;
+    a._delta = a.delta;
+    a._pct = pctChange(h, 1);
+    a._delta3 = absChange(h, 3);
+    a._pct3 = pctChange(h, 3);
+    a._delta6 = absChange(h, 6);
+    a._missing = h.length > 0 && latestDateAll && h[h.length-1].date !== latestDateAll;
+    a._postsTotal = h.length ? h[h.length-1].posts : null;
+    a._postsMonth = postsPerMonth(h);
+    a._postsAvg3 = postsAvg(h, 3);
+  });
+
+  document.getElementById('meta-count').textContent = accounts.length;
+  document.getElementById('meta-own').textContent = accounts.filter(a => a.type === 'own').length;
+  document.getElementById('meta-foreign').textContent = accounts.filter(a => a.type === 'foreign').length;
+  document.getElementById('meta-updated').textContent = formatUpdated(data && data.generated_at);
+  document.getElementById('panel-count').textContent = accounts.length + ' celkem';
+
+  let sortKey = 'latest';
+  let sortDir = -1; // -1 sestupně, 1 vzestupně
+  let currentUser = null;
+
+  document.querySelectorAll('.sortbtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.sort;
+      if(sortKey === key){ sortDir = -sortDir; }
+      else { sortKey = key; sortDir = (key === 'name') ? 1 : -1; }
+      renderList();
+    });
+  });
+
+  function postsPerMonth(h){
+    if(!h || h.length < 2) return null;
+    const a = h[h.length-2].posts, b = h[h.length-1].posts;
+    if(a === null || a === undefined || b === null || b === undefined) return null;
+    return Math.max(0, b - a);
+  }
+  function postsAvg(h, months){
+    if(!h || h.length < months + 1) return null;
+    const a = h[h.length-1-months].posts, b = h[h.length-1].posts;
+    if(a === null || a === undefined || b === null || b === undefined) return null;
+    return Math.max(0, b - a) / months;
+  }
+
+  function absChange(h, months){
+    if(!h || h.length < months + 1) return null;
+    return h[h.length-1].followers - h[h.length-1-months].followers;
+  }
+  function pctChange(h, months){
+    if(!h || h.length < months + 1) return null;
+    const prev = h[h.length-1-months].followers;
+    if(!prev) return null;
+    return ((h[h.length-1].followers - prev) / prev) * 100;
+  }
+  // "2026-08-26 12:43 UTC" -> místní (pražský) čas
+  function formatUpdated(raw){
+    if(!raw) return '—';
+    const m = String(raw).match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/);
+    if(!m) return raw;
+    const d = new Date(Date.UTC(+m[1], +m[2]-1, +m[3], +m[4], +m[5]));
+    if(isNaN(d.getTime())) return raw;
+    try{
+      return new Intl.DateTimeFormat('cs-CZ', {
+        day: 'numeric', month: 'numeric', year: 'numeric',
+        hour: '2-digit', minute: '2-digit',
+        timeZone: 'Europe/Prague'
+      }).format(d);
+    }catch(e){
+      return raw;
+    }
+  }
+
+  function fmtNum(n){
+    return (n === null || n === undefined) ? '—' : Number(n).toLocaleString('cs-CZ');
+  }
+  function fmtPct(p){
+    if(p === null || p === undefined) return '';
+    const s = (p >= 0 ? '+' : '') + p.toFixed(1).replace('.', ',') + ' %';
+    return s;
+  }
+
+  function deltaCell(delta, pct, shortLabel){
+    const el = document.createElement('span');
+    if(delta === null || delta === undefined){
+      el.className = 'delta none';
+      el.textContent = shortLabel || '—';
+      return el;
+    }
+    let cls = 'flat', sign = '— ';
+    if(delta > 0){ cls = 'up'; sign = '▲ +'; }
+    else if(delta < 0){ cls = 'down'; sign = '▼ '; }
+    el.className = 'delta ' + cls;
+    const main = document.createElement('span');
+    main.textContent = sign + (delta === 0 ? '0' : delta);
+    el.appendChild(main);
+    if(pct !== null && pct !== undefined){
+      const p = document.createElement('span');
+      p.className = 'pct';
+      p.textContent = fmtPct(pct);
+      el.appendChild(p);
+    }
+    return el;
+  }
+
+  function sortAccounts(){
+    const arr = accounts.slice();
+    arr.sort((a, b) => {
+      let va, vb;
+      if(sortKey === 'name'){
+        return a.username.localeCompare(b.username, 'cs') * sortDir;
+      }
+      if(sortKey === 'latest'){ va = a.latest; vb = b.latest; }
+      else if(sortKey === 'postsmo'){ va = a._postsMonth; vb = b._postsMonth; }
+      else if(sortKey === 'delta'){ va = a._delta; vb = b._delta; }
+      else { va = a._delta3; vb = b._delta3; }
+      if(va === null || va === undefined) return 1;   // prázdné vždy dolů
+      if(vb === null || vb === undefined) return -1;
+      if(va === vb) return a.username.localeCompare(b.username, 'cs');
+      return (va - vb) * sortDir;
+    });
+    return arr;
+  }
+
+  function renderList(){
+    document.querySelectorAll('.sortbtn').forEach(b => {
+      const active = b.dataset.sort === sortKey;
+      b.setAttribute('aria-sort', active ? 'true' : 'false');
+      const arrow = b.querySelector('.arrow');
+      if(arrow) arrow.textContent = sortDir === 1 ? '↑' : '↓';
+    });
+
+    const sorted = sortAccounts();
+    listEl.innerHTML = '';
+    const rows = [];
+
+    sorted.forEach(acc => {
+      const li = document.createElement('li');
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'acct-row' + (acc.type === 'own' ? ' is-own' : '');
+      row.setAttribute('aria-current', 'false');
+
+      // sloupec 1 — jméno + odkaz na profil
+      const nameCell = document.createElement('span');
+      nameCell.className = 'name-cell';
+      if(acc.type === 'own'){
+        const tag = document.createElement('span');
+        tag.className = 'acct-tag';
+        tag.textContent = 'vlastní';
+        nameCell.appendChild(tag);
+      }
+      const name = document.createElement('span');
+      name.className = 'acct-name';
+      name.textContent = acc.username;
+      nameCell.appendChild(name);
+
+      const link = document.createElement('a');
+      link.className = 'ig-link';
+      link.href = 'https://www.instagram.com/' + acc.username + '/';
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = '↗';
+      link.title = 'Otevřít profil na Instagramu';
+      link.addEventListener('click', e => e.stopPropagation());
+      nameCell.appendChild(link);
+
+      // sloupec 2 — počet sledujících
+      const followers = document.createElement('span');
+      followers.className = 'num';
+      followers.textContent = fmtNum(acc.latest);
+      if(acc._missing){
+        followers.classList.add('muted');
+        followers.title = 'Poslední záznam: ' + (acc.history[acc.history.length-1].date) + ' — za nejnovější měsíc chybí.';
+        followers.textContent = fmtNum(acc.latest) + ' ⚠';
+      }
+
+      // sloupec 3 — příspěvky za měsíc + celkem
+      const postsCell = document.createElement('span');
+      const hasMonth = acc._postsMonth !== null && acc._postsMonth !== undefined;
+      const hasTotal = acc._postsTotal !== null && acc._postsTotal !== undefined;
+
+      if(!hasMonth && !hasTotal){
+        postsCell.className = 'posts empty';
+        postsCell.textContent = '—';
+      } else {
+        postsCell.className = 'posts';
+        const pm = document.createElement('span');
+        if(hasMonth){
+          pm.textContent = acc._postsMonth;
+        } else {
+          pm.textContent = '—';
+          pm.style.color = 'var(--ink-faint)';
+          postsCell.title = 'Měsíční přírůstek se zobrazí, jakmile budou příspěvky ve dvou po sobě jdoucích měřeních.';
+        }
+        postsCell.appendChild(pm);
+
+        if(hasTotal){
+          const tot = document.createElement('span');
+          tot.className = 'total';
+          tot.textContent = fmtNum(acc._postsTotal) + ' celkem';
+          postsCell.appendChild(tot);
+        }
+        if(acc._postsAvg3 !== null && acc._postsAvg3 !== undefined){
+          postsCell.title = 'Průměr za 3 měsíce: ' + acc._postsAvg3.toFixed(1).replace('.', ',') + ' příspěvků/měsíc';
+        }
+      }
+
+      // sloupce 4 a 5 — změny
+      const d1 = deltaCell(acc._delta, acc._pct, '1. záznam');
+      const d3 = deltaCell(acc._delta3, acc._pct3, '—');
+
+      row.appendChild(nameCell);
+      row.appendChild(followers);
+      row.appendChild(postsCell);
+      row.appendChild(d1);
+      row.appendChild(d3);
+      row.addEventListener('click', () => select(acc, row));
+
+      li.appendChild(row);
+      listEl.appendChild(li);
+      rows.push({ acc, row });
+    });
+
+    // obnovit výběr, nebo vybrat první
+    let target = rows.find(r => r.acc.username === currentUser);
+    if(!target) target = rows[0];
+    if(target) select(target.acc, target.row);
+  }
+
+  function select(acc, rowEl){
+    currentUser = acc.username;
+    document.querySelectorAll('.acct-row').forEach(r => r.setAttribute('aria-current','false'));
+    if(rowEl) rowEl.setAttribute('aria-current','true');
+    try{
+      drawChart(acc);
+    }catch(e){
+      chartEl.innerHTML = '<div class="empty-state">Graf se nepodařilo vykreslit.</div>';
+    }
+    try{
+      drawBars(acc);
+    }catch(e){
+      barsEl.innerHTML = '<div class="empty-state">Graf se nepodařilo vykreslit.</div>';
+    }
+  }
+
+  // Sloupcový graf měsíčních přírůstků - posledních max 6 měsíců.
+  function drawBars(acc){
+    const history = acc.history || [];
+    barsTitle.textContent = 'Přírůstek sledujících — ' + acc.username;
+
+    // přírůstky mezi po sobě jdoucími záznamy
+    const gains = [];
+    for(let i = 1; i < history.length; i++){
+      gains.push({
+        date: history[i].date,
+        value: history[i].followers - history[i-1].followers
+      });
+    }
+
+    if(gains.length === 0){
+      barsEl.innerHTML = '<div class="empty-state">Přírůstek se zobrazí od druhého měsíce měření.</div>';
+      barsCaption.textContent = '';
+      return;
+    }
+
+    // posuvné okno: jen posledních 6
+    const shown = gains.slice(-6);
+    barsCaption.textContent = shown.length === 1
+      ? 'Zatím jeden měsíční přírůstek.'
+      : 'Posledních ' + shown.length + ' měsíců.';
+
+    const W = 560, H = 260;
+    const padL = 16, padR = 16, padT = 24, padB = 44;
+    const innerW = W - padL - padR, innerH = H - padT - padB;
+
+    const maxAbs = Math.max.apply(null, shown.map(g => Math.abs(g.value))) || 1;
+    const hasNeg = shown.some(g => g.value < 0);
+
+    // nulová osa: dole, pokud jsou všechny hodnoty kladné
+    const zeroY = hasNeg ? padT + innerH / 2 : padT + innerH;
+    const usable = hasNeg ? innerH / 2 : innerH;
+
+    const slot = innerW / shown.length;
+    const barW = Math.min(64, slot * 0.62);
+
+    const parts = ['<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">'];
+
+    // nulová linka
+    parts.push('<line x1="' + padL + '" y1="' + zeroY.toFixed(1) + '" x2="' + (W-padR) + '" y2="' + zeroY.toFixed(1) + '" stroke="#4F5A2B" stroke-width="1.25"/>');
+
+    shown.forEach((g, i) => {
+      const cx = padL + slot * i + slot / 2;
+      const h = Math.abs(g.value) / maxAbs * usable * 0.86;
+      const up = g.value >= 0;
+      const yTop = up ? zeroY - h : zeroY;
+      const fill = up ? '#6E7B3F' : '#C9CDB4';
+
+      parts.push('<rect x="' + (cx - barW/2).toFixed(1) + '" y="' + yTop.toFixed(1) +
+                 '" width="' + barW.toFixed(1) + '" height="' + Math.max(1, h).toFixed(1) +
+                 '" fill="' + fill + '"><title>' + g.date + ': ' +
+                 (g.value >= 0 ? '+' : '') + g.value + '</title></rect>');
+
+      // hodnota nad/pod sloupcem
+      const vy = up ? yTop - 7 : yTop + h + 14;
+      parts.push('<text class="bar-value" x="' + cx.toFixed(1) + '" y="' + vy.toFixed(1) +
+                 '" text-anchor="middle">' + (g.value >= 0 ? '+' : '') + g.value + '</text>');
+
+      // popisek měsíce vždy dole
+      parts.push('<text class="bar-label" x="' + cx.toFixed(1) + '" y="' + (padT + innerH + 30) +
+                 '" text-anchor="middle">' + g.date.slice(5,7) + '</text>');
+    });
+
+    parts.push('</svg>');
+    barsEl.innerHTML = parts.join('');
+  }
+
+  // Vlastní SVG graf — bez externích knihoven, funguje i offline.
+  function drawChart(acc){
+    const history = acc.history || [];
+    chartTitle.textContent = 'Vývoj — ' + acc.username;
+    legendEl.innerHTML = '';
+
+    if(history.length === 0){
+      chartEl.innerHTML = '<div class="empty-state">Pro tento účet zatím nejsou data.</div>';
+      chartCaption.textContent = '';
+      return;
+    }
+
+    // porovnávací řada = vlastní účet (pokud se právě nedívám na něj)
+    const showRef = ownAccount && ownAccount.username !== acc.username && (ownAccount.history || []).length > 0;
+    const refHistory = showRef ? ownAccount.history : [];
+
+    const caption = [];
+    caption.push(history.length + ' záznamů: ' + history[0].date + ' → ' + history[history.length-1].date);
+    if(acc._delta6 !== null && acc._delta6 !== undefined){
+      caption.push('za 6 měsíců ' + (acc._delta6 >= 0 ? '+' : '') + acc._delta6);
+    }
+    if(acc._postsAvg3 !== null && acc._postsAvg3 !== undefined){
+      caption.push('průměrně ' + acc._postsAvg3.toFixed(1).replace('.', ',') + ' příspěvků/měsíc');
+    }
+    chartCaption.textContent = caption.join(' · ') + '.';
+
+    const W = 560, H = 280;
+    const padL = 58, padR = 16, padT = 16, padB = 34;
+    const innerW = W - padL - padR, innerH = H - padT - padB;
+
+    // společné datumové osy = sjednocení dat obou řad
+    const allDates = Array.from(new Set(
+      history.map(h => h.date).concat(refHistory.map(h => h.date))
+    )).sort();
+
+    const values = history.map(h => h.followers)
+      .concat(showRef ? refHistory.map(h => h.followers) : []);
+    let min = Math.min.apply(null, values);
+    let max = Math.max.apply(null, values);
+    if(min === max){ min -= 10; max += 10; }
+    const span = max - min;
+    min -= span * 0.15;
+    max += span * 0.15;
+
+    const xByDate = d => {
+      const i = allDates.indexOf(d);
+      return allDates.length === 1
+        ? padL + innerW / 2
+        : padL + (i / (allDates.length - 1)) * innerW;
+    };
+    const y = v => padT + innerH - ((v - min) / (max - min)) * innerH;
+
+    const parts = ['<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">'];
+
+    const TICKS = 4;
+    for(let t = 0; t <= TICKS; t++){
+      const v = min + (max - min) * (t / TICKS);
+      const yy = y(v);
+      parts.push('<line x1="' + padL + '" y1="' + yy.toFixed(1) + '" x2="' + (W-padR) + '" y2="' + yy.toFixed(1) + '" stroke="#EDEDEB" stroke-width="1"/>');
+      parts.push('<text class="ax-label" x="' + (padL-8) + '" y="' + (yy+3.5).toFixed(1) + '" text-anchor="end">' + Math.round(v).toLocaleString('cs-CZ') + '</text>');
+    }
+
+    parts.push('<line x1="' + padL + '" y1="' + padT + '" x2="' + padL + '" y2="' + (padT+innerH) + '" stroke="#111" stroke-width="1"/>');
+    parts.push('<line x1="' + padL + '" y1="' + (padT+innerH) + '" x2="' + (W-padR) + '" y2="' + (padT+innerH) + '" stroke="#111" stroke-width="1"/>');
+
+    // porovnávací linka (vlastní účet) — vespod, čárkovaně
+    if(showRef && refHistory.length > 1){
+      let refLine = '';
+      refHistory.forEach((h, i) => {
+        refLine += (i === 0 ? 'M ' : ' L ') + xByDate(h.date).toFixed(1) + ' ' + y(h.followers).toFixed(1);
+      });
+      parts.push('<path d="' + refLine + '" fill="none" stroke="#6E7B3F" stroke-width="1.5" stroke-dasharray="4 3"/>');
+    }
+
+    // hlavní řada
+    if(history.length > 1){
+      let area = 'M ' + xByDate(history[0].date).toFixed(1) + ' ' + (padT+innerH).toFixed(1);
+      history.forEach(h => { area += ' L ' + xByDate(h.date).toFixed(1) + ' ' + y(h.followers).toFixed(1); });
+      area += ' L ' + xByDate(history[history.length-1].date).toFixed(1) + ' ' + (padT+innerH).toFixed(1) + ' Z';
+      parts.push('<path d="' + area + '" fill="rgba(110,123,63,0.10)"/>');
+
+      let line = '';
+      history.forEach((h, i) => {
+        line += (i === 0 ? 'M ' : ' L ') + xByDate(h.date).toFixed(1) + ' ' + y(h.followers).toFixed(1);
+      });
+      parts.push('<path d="' + line + '" fill="none" stroke="#111" stroke-width="1.75"/>');
+    }
+
+    history.forEach(h => {
+      parts.push('<circle cx="' + xByDate(h.date).toFixed(1) + '" cy="' + y(h.followers).toFixed(1) + '" r="3.5" fill="#fff" stroke="#4F5A2B" stroke-width="1.75"><title>' + h.date + ': ' + h.followers.toLocaleString('cs-CZ') + '</title></circle>');
+    });
+
+    allDates.forEach(d => {
+      parts.push('<text class="ax-label" x="' + xByDate(d).toFixed(1) + '" y="' + (padT+innerH+18) + '" text-anchor="middle">' + d.slice(5) + '</text>');
+    });
+
+    parts.push('</svg>');
+    chartEl.innerHTML = parts.join('');
+
+    legendEl.innerHTML =
+      '<span><i class="swatch"></i>' + acc.username + '</span>' +
+      (showRef ? '<span><i class="swatch ref"></i>' + ownAccount.username + ' (váš účet)</span>' : '');
+  }
+
+  renderList();
+})();
+</script>
+</body>
+</html>
