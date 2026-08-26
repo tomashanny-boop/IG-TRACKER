@@ -1,6 +1,6 @@
 {
   "accounts": [
-    {"username": "cmcarchitects", "type": "own"},
+    {"username": "cmcarchitects", "type": "foreign"},
 
     {"username": "a8000.cz", "type": "foreign"},
     {"username": "a69_architekti", "type": "foreign"},
