@@ -1,7 +1,6 @@
 {
   "accounts": [
     {"username": "cmcarchitects", "type": "foreign"},
-
     {"username": "a8000.cz", "type": "foreign"},
     {"username": "a69_architekti", "type": "foreign"},
     {"username": "atelier_ra15", "type": "foreign"},
@@ -16,16 +15,16 @@
     {"username": "adns.architekti", "type": "foreign"}
   ],
 
-  
+  "graph_api": {
+    "ig_user_ids": {}
   },
 
   "instaloader_login": {
-    "_note": "Heslo se NIKDY nedává do tohoto souboru - čte se z GitHub Secret IG_SCRAPER_PASSWORD.",
-    "username": "VLOŽTE_USERNAME_SCRAPER_UCTU"
+    "username": "tomas.hanny2"
   },
 
   "delay_seconds_between_foreign_requests": {
     "min": 20,
     "max": 60
   }
-
+}
