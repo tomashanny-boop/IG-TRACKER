@@ -1,67 +1,67 @@
 """
-Jednorázové naplnění historických hodnot, které byly měřeny ručně
-před spuštěním automatizace.
+Načte ručně zapsané hodnoty z manual_entries.json do databáze.
 
-Spustit JEDNOU:
+Spouští se automaticky přes GitHub Actions pokaždé, když se
+manual_entries.json změní. Dá se spustit i ručně:
+
     python seed_history.py
 
-Skript je bezpečný i při opakovaném spuštění - stejné datum u stejného
-účtu se jen přepíše, nevznikne duplicita.
-
-Počet příspěvků (posts) u těchto historických záznamů není k dispozici,
-zůstává prázdný. Naplní se automaticky od prvního běhu workflow.
-
-POZOR: hodnoty u chybikkristof jsou ODHAD (v podkladu bylo jen "19,3 k"),
-ne skutečně naměřená čísla. Až bude známé přesné číslo, přepsat zde.
+Opakované spuštění nevadí - stejné datum u stejného účtu se přepíše,
+duplicity nevzniknou. Hodnoty stažené automatikou se tím nepřepíšou,
+pokud pro dané datum v manual_entries.json nic není.
 """
+import json
+import sys
+from pathlib import Path
+
 import db
 
-# datum měření -> hodnoty. Měří se vždy 1. den v měsíci.
-HISTORY = {
-    "2026-07-01": {
-        "cmcarchitects": 2085,
-        "a8000.cz": 4539,
-        "adr_architects": 3227,
-        "dam.architekti": 2717,
-        "a69_architekti": 2301,
-        "qartaarch": 2082,
-        "jakub_cigler_architekti": 2053,
-        "atelier_ra15": 1623,
-        "adns.architekti": 1418,
-        "editarchitects": 7580,
-        "studio_perspektiv": 5860,
-        "ova_architekti": 7060,
-        "chybikkristof": 19300,   # ODHAD, ne měřená hodnota - v podkladu jen "19,3 k"
-    },
-    "2026-08-01": {
-        "cmcarchitects": 2117,
-        "a8000.cz": 4674,
-        "adr_architects": 3236,
-        "dam.architekti": 2734,
-        "a69_architekti": 2362,
-        "qartaarch": 2090,
-        "jakub_cigler_architekti": 2073,
-        "atelier_ra15": 1687,
-        "adns.architekti": 1418,
-        "editarchitects": 7621,
-        "studio_perspektiv": 6026,
-        "ova_architekti": 7083,
-        "chybikkristof": 19400,   # ODHAD, ne měřená hodnota - v podkladu jen "19,3 k"
-    },
-}
+ENTRIES_PATH = Path(__file__).parent / "manual_entries.json"
+CONFIG_PATH = Path(__file__).parent / "config.json"
 
-TYPES = {"cmcarchitects": "own"}  # vše ostatní je konkurence
+
+def account_types():
+    """Typ účtu (own/foreign) načte z config.json, ať to sedí na jednom místě."""
+    types = {}
+    if CONFIG_PATH.exists():
+        with open(CONFIG_PATH, encoding="utf-8") as f:
+            cfg = json.load(f)
+        for acc in cfg.get("accounts", []):
+            types[acc["username"]] = acc.get("type", "foreign")
+    return types
 
 
 def main():
+    if not ENTRIES_PATH.exists():
+        print("manual_entries.json neexistuje, není co načítat.")
+        return
+
+    with open(ENTRIES_PATH, encoding="utf-8") as f:
+        entries = json.load(f)
+
     db.init_db()
+    types = account_types()
+
     total = 0
-    for snapshot_date, values in sorted(HISTORY.items()):
-        for username, followers in values.items():
-            db.ensure_account(username, TYPES.get(username, "foreign"))
-            db.insert_snapshot(username, followers, snapshot_date)
+    for snapshot_date in sorted(entries.keys()):
+        values = entries[snapshot_date]
+        for username, vals in values.items():
+            if isinstance(vals, dict):
+                followers = vals.get("followers")
+                posts = vals.get("posts")
+            else:
+                followers, posts = vals, None
+
+            if followers is None:
+                print(f"[PŘESKOČENO] {snapshot_date} {username}: chybí followers")
+                continue
+
+            db.ensure_account(username, types.get(username, "foreign"))
+            db.insert_snapshot(username, int(followers), snapshot_date,
+                               posts=int(posts) if posts is not None else None)
             total += 1
-    print(f"Naplněno {total} historických záznamů.")
+
+    print(f"Načteno {total} ručně zapsaných záznamů.")
 
 
 if __name__ == "__main__":
