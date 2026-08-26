@@ -19,8 +19,8 @@ import time
 from pathlib import Path
 
 import db
-from fetch_own import fetch_own_followers
-from fetch_foreign import get_loader, fetch_foreign_followers
+from fetch_own import fetch_own_profile
+from fetch_foreign import get_loader, fetch_foreign_profile
 
 CONFIG_PATH = Path(__file__).parent / "config.json"
 
@@ -60,10 +60,10 @@ def main():
             print(f"[PŘESKOČENO] {username}: chybí ig_user_id nebo access token")
             continue
         try:
-            followers = fetch_own_followers(ig_user_id, access_token)
-            db.insert_snapshot(username, followers)
+            followers, posts = fetch_own_profile(ig_user_id, access_token)
+            db.insert_snapshot(username, followers, posts=posts)
             results.append((username, followers, "own"))
-            print(f"[OK] {username}: {followers} sledujících")
+            print(f"[OK] {username}: {followers} sledujících, {posts} příspěvků")
         except Exception as e:
             print(f"[CHYBA] {username}: {e}")
 
@@ -82,10 +82,10 @@ def main():
                 username = acc["username"]
                 db.ensure_account(username, "foreign")
                 try:
-                    followers = fetch_foreign_followers(loader, username)
-                    db.insert_snapshot(username, followers)
+                    followers, posts = fetch_foreign_profile(loader, username)
+                    db.insert_snapshot(username, followers, posts=posts)
                     results.append((username, followers, "foreign"))
-                    print(f"[OK] {username}: {followers} sledujících")
+                    print(f"[OK] {username}: {followers} sledujících, {posts} příspěvků")
                 except Exception as e:
                     print(f"[CHYBA] {username}: {e}")
 

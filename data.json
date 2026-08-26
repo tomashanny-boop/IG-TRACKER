@@ -1,0 +1,239 @@
+{
+  "generated_at": "2026-08-26 09:08 UTC",
+  "accounts": [
+    {
+      "username": "cmcarchitects",
+      "type": "own",
+      "history": [
+        {
+          "date": "2026-07-01",
+          "followers": 2085,
+          "posts": null
+        },
+        {
+          "date": "2026-08-01",
+          "followers": 2117,
+          "posts": null
+        }
+      ],
+      "latest": 2117,
+      "delta": 32
+    },
+    {
+      "username": "a69_architekti",
+      "type": "foreign",
+      "history": [
+        {
+          "date": "2026-07-01",
+          "followers": 2301,
+          "posts": null
+        },
+        {
+          "date": "2026-08-01",
+          "followers": 2362,
+          "posts": null
+        }
+      ],
+      "latest": 2362,
+      "delta": 61
+    },
+    {
+      "username": "a8000.cz",
+      "type": "foreign",
+      "history": [
+        {
+          "date": "2026-07-01",
+          "followers": 4539,
+          "posts": null
+        },
+        {
+          "date": "2026-08-01",
+          "followers": 4674,
+          "posts": null
+        }
+      ],
+      "latest": 4674,
+      "delta": 135
+    },
+    {
+      "username": "adns.architekti",
+      "type": "foreign",
+      "history": [
+        {
+          "date": "2026-07-01",
+          "followers": 1418,
+          "posts": null
+        },
+        {
+          "date": "2026-08-01",
+          "followers": 1418,
+          "posts": null
+        }
+      ],
+      "latest": 1418,
+      "delta": 0
+    },
+    {
+      "username": "adr_architects",
+      "type": "foreign",
+      "history": [
+        {
+          "date": "2026-07-01",
+          "followers": 3227,
+          "posts": null
+        },
+        {
+          "date": "2026-08-01",
+          "followers": 3236,
+          "posts": null
+        }
+      ],
+      "latest": 3236,
+      "delta": 9
+    },
+    {
+      "username": "atelier_ra15",
+      "type": "foreign",
+      "history": [
+        {
+          "date": "2026-07-01",
+          "followers": 1623,
+          "posts": null
+        },
+        {
+          "date": "2026-08-01",
+          "followers": 1687,
+          "posts": null
+        }
+      ],
+      "latest": 1687,
+      "delta": 64
+    },
+    {
+      "username": "chybikkristof",
+      "type": "foreign",
+      "history": [
+        {
+          "date": "2026-07-01",
+          "followers": 19300,
+          "posts": null
+        },
+        {
+          "date": "2026-08-01",
+          "followers": 19400,
+          "posts": null
+        }
+      ],
+      "latest": 19400,
+      "delta": 100
+    },
+    {
+      "username": "dam.architekti",
+      "type": "foreign",
+      "history": [
+        {
+          "date": "2026-07-01",
+          "followers": 2717,
+          "posts": null
+        },
+        {
+          "date": "2026-08-01",
+          "followers": 2734,
+          "posts": null
+        }
+      ],
+      "latest": 2734,
+      "delta": 17
+    },
+    {
+      "username": "editarchitects",
+      "type": "foreign",
+      "history": [
+        {
+          "date": "2026-07-01",
+          "followers": 7580,
+          "posts": null
+        },
+        {
+          "date": "2026-08-01",
+          "followers": 7621,
+          "posts": null
+        }
+      ],
+      "latest": 7621,
+      "delta": 41
+    },
+    {
+      "username": "jakub_cigler_architekti",
+      "type": "foreign",
+      "history": [
+        {
+          "date": "2026-07-01",
+          "followers": 2053,
+          "posts": null
+        },
+        {
+          "date": "2026-08-01",
+          "followers": 2073,
+          "posts": null
+        }
+      ],
+      "latest": 2073,
+      "delta": 20
+    },
+    {
+      "username": "ova_architekti",
+      "type": "foreign",
+      "history": [
+        {
+          "date": "2026-07-01",
+          "followers": 7060,
+          "posts": null
+        },
+        {
+          "date": "2026-08-01",
+          "followers": 7083,
+          "posts": null
+        }
+      ],
+      "latest": 7083,
+      "delta": 23
+    },
+    {
+      "username": "qartaarch",
+      "type": "foreign",
+      "history": [
+        {
+          "date": "2026-07-01",
+          "followers": 2082,
+          "posts": null
+        },
+        {
+          "date": "2026-08-01",
+          "followers": 2090,
+          "posts": null
+        }
+      ],
+      "latest": 2090,
+      "delta": 8
+    },
+    {
+      "username": "studio_perspektiv",
+      "type": "foreign",
+      "history": [
+        {
+          "date": "2026-07-01",
+          "followers": 5860,
+          "posts": null
+        },
+        {
+          "date": "2026-08-01",
+          "followers": 6026,
+          "posts": null
+        }
+      ],
+      "latest": 6026,
+      "delta": 166
+    }
+  ]
+}

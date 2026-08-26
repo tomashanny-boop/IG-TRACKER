@@ -46,6 +46,8 @@ def get_loader(login_username: str) -> instaloader.Instaloader:
     return L
 
 
-def fetch_foreign_followers(loader: instaloader.Instaloader, target_username: str) -> int:
+def fetch_foreign_profile(loader: instaloader.Instaloader, target_username: str):
+    """Vrátí (followers, posts). Obojí přijde v jedné odpovědi profilu,
+    takže počet příspěvků nestojí žádný požadavek navíc."""
     profile = instaloader.Profile.from_username(loader.context, target_username)
-    return profile.followers
+    return profile.followers, profile.mediacount

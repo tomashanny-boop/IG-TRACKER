@@ -1,5 +1,6 @@
 """
-Jednoduchá SQLite vrstva pro ukládání měsíčních snapshotů počtu sledujících.
+Jednoduchá SQLite vrstva pro ukládání měsíčních snapshotů počtu sledujících
+a počtu příspěvků.
 """
 import sqlite3
 from datetime import date
@@ -28,10 +29,17 @@ def init_db():
             username TEXT NOT NULL REFERENCES accounts(username),
             snapshot_date TEXT NOT NULL,
             followers INTEGER NOT NULL,
+            posts INTEGER,
             UNIQUE(username, snapshot_date)
         );
         """
     )
+
+    # migrace starších databází, které sloupec 'posts' ještě nemají
+    cols = [r[1] for r in conn.execute("PRAGMA table_info(snapshots)").fetchall()]
+    if "posts" not in cols:
+        conn.execute("ALTER TABLE snapshots ADD COLUMN posts INTEGER")
+
     conn.commit()
     conn.close()
 
@@ -47,13 +55,16 @@ def ensure_account(username: str, acc_type: str):
     conn.close()
 
 
-def insert_snapshot(username: str, followers: int, snapshot_date: str = None):
+def insert_snapshot(username: str, followers: int, snapshot_date: str = None,
+                    posts: int = None):
     snapshot_date = snapshot_date or date.today().isoformat()
     conn = get_connection()
     conn.execute(
-        "INSERT INTO snapshots (username, snapshot_date, followers) VALUES (?, ?, ?) "
-        "ON CONFLICT(username, snapshot_date) DO UPDATE SET followers=excluded.followers",
-        (username, snapshot_date, followers),
+        "INSERT INTO snapshots (username, snapshot_date, followers, posts) "
+        "VALUES (?, ?, ?, ?) "
+        "ON CONFLICT(username, snapshot_date) DO UPDATE SET "
+        "followers=excluded.followers, posts=excluded.posts",
+        (username, snapshot_date, followers, posts),
     )
     conn.commit()
     conn.close()
