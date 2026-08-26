@@ -29,7 +29,7 @@ jobs:
           IG_SCRAPER_PASSWORD: ${{ secrets.IG_SCRAPER_PASSWORD }}
         run: python run_monthly.py
 
-         - name: Vygenerovat REPORT.md
+      - name: Vygenerovat REPORT.md
         run: python export_report_md.py
 
       - name: Vygenerovat data pro web
