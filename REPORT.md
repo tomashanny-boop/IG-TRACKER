@@ -4,16 +4,16 @@ _Poslední aktualizace: 2026-08-31_
 
 | Účet | Typ | Datum | Sledující | Změna |
 |---|---|---|---|---|
-| a69_architekti | foreign | 2026-08-01 | 2362 | +61 |
-| a8000.cz | foreign | 2026-08-01 | 4674 | +135 |
-| adns.architekti | foreign | 2026-08-01 | 1418 | 0 |
-| adr_architects | foreign | 2026-08-01 | 3236 | +9 |
-| atelier_ra15 | foreign | 2026-08-01 | 1687 | +64 |
-| chybikkristof | foreign | 2026-08-01 | 19400 | +100 |
-| cmcarchitects | own | 2026-08-01 | 2117 | +32 |
-| dam.architekti | foreign | 2026-08-01 | 2734 | +17 |
-| editarchitects | foreign | 2026-08-01 | 7621 | +41 |
-| jakub_cigler_architekti | foreign | 2026-08-01 | 2073 | +20 |
-| ova_architekti | foreign | 2026-08-01 | 7083 | +23 |
-| qartaarch | foreign | 2026-08-01 | 2090 | +8 |
-| studio_perspektiv | foreign | 2026-08-01 | 6026 | +166 |
+| a69_architekti | foreign | 2026-09-01 | 2418 | +56 |
+| a8000.cz | foreign | 2026-09-01 | 4712 | +38 |
+| adns.architekti | foreign | 2026-09-01 | 1415 | -3 |
+| adr_architects | foreign | 2026-09-01 | 3274 | +38 |
+| atelier_ra15 | foreign | 2026-09-01 | 1773 | +86 |
+| chybikkristof | foreign | 2026-09-01 | 19662 | +262 |
+| cmcarchitects | own | 2026-09-01 | 2154 | +37 |
+| dam.architekti | foreign | 2026-09-01 | 2736 | +2 |
+| editarchitects | foreign | 2026-09-01 | 7767 | +146 |
+| jakub_cigler_architekti | foreign | 2026-09-01 | 2102 | +29 |
+| ova_architekti | foreign | 2026-09-01 | 7094 | +11 |
+| qartaarch | foreign | 2026-09-01 | 2111 | +21 |
+| studio_perspektiv | foreign | 2026-09-01 | 6740 | +714 |
