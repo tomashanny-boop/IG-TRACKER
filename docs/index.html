@@ -92,7 +92,11 @@
   }
   .bar-value{
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 11px; fill: var(--ink-muted);
+    font-size: 13px; font-weight: 600; fill: var(--ink);
+  }
+  .bar-posts{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11.5px; font-weight: 600; fill: var(--ink-muted);
   }
 
   .panel-head{
@@ -614,9 +618,13 @@
     // přírůstky mezi po sobě jdoucími záznamy
     const gains = [];
     for(let i = 1; i < history.length; i++){
+      const pPrev = history[i-1].posts, pNow = history[i].posts;
+      const posts = (pPrev === null || pPrev === undefined || pNow === null || pNow === undefined)
+        ? null : Math.max(0, pNow - pPrev);
       gains.push({
         date: history[i].date,
-        value: history[i].followers - history[i-1].followers
+        value: history[i].followers - history[i-1].followers,
+        posts: posts
       });
     }
 
@@ -632,8 +640,8 @@
       ? 'Zatím jeden měsíční přírůstek.'
       : 'Posledních ' + shown.length + ' měsíců.';
 
-    const W = 560, H = 260;
-    const padL = 16, padR = 16, padT = 24, padB = 44;
+    const W = 560, H = 276;
+    const padL = 16, padR = 16, padT = 40, padB = 44;
     const innerW = W - padL - padR, innerH = H - padT - padB;
 
     const maxAbs = Math.max.apply(null, shown.map(g => Math.abs(g.value))) || 1;
@@ -661,14 +669,24 @@
       parts.push('<rect x="' + (cx - barW/2).toFixed(1) + '" y="' + yTop.toFixed(1) +
                  '" width="' + barW.toFixed(1) + '" height="' + Math.max(1, h).toFixed(1) +
                  '" fill="' + fill + '"><title>' + g.date + ': ' +
-                 (g.value >= 0 ? '+' : '') + g.value + '</title></rect>');
+                 (g.value >= 0 ? '+' : '') + g.value + ' sledujících' +
+                 (g.posts === null || g.posts === undefined ? '' : ', ' + g.posts + ' příspěvků') +
+                 '</title></rect>');
 
-      // hodnota nad/pod sloupcem
-      const vy = up ? yTop - 7 : yTop + h + 14;
+      // nad sloupcem: 1. řádek přírůstek sledujících, 2. řádek počet příspěvků
+      const vy = up ? yTop - 23 : yTop + h + 17;
+      const py = up ? yTop - 8  : yTop + h + 31;
+
       parts.push('<text class="bar-value" x="' + cx.toFixed(1) + '" y="' + vy.toFixed(1) +
                  '" text-anchor="middle">' + (g.value >= 0 ? '+' : '') + g.value + '</text>');
 
-      // popisek měsíce vždy dole
+      const postsLabel = (g.posts === null || g.posts === undefined)
+        ? '— přísp.'
+        : g.posts + (g.posts === 1 ? ' příspěvek' : (g.posts >= 2 && g.posts <= 4 ? ' příspěvky' : ' příspěvků'));
+      parts.push('<text class="bar-posts" x="' + cx.toFixed(1) + '" y="' + py.toFixed(1) +
+                 '" text-anchor="middle">' + postsLabel + '</text>');
+
+      // popisek měsíce dole
       parts.push('<text class="bar-label" x="' + cx.toFixed(1) + '" y="' + (padT + innerH + 30) +
                  '" text-anchor="middle">' + g.date.slice(5,7) + '</text>');
     });
