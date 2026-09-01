@@ -19,6 +19,8 @@
     --green-deep: #4F5A2B;
     --green-soft: #EEF0E4;
     --green-line: #C9CDB4;
+    --warn: #C0762A;
+    --bad: #B23B2B;
   }
 
   *{ box-sizing: border-box; }
@@ -186,6 +188,9 @@
     font-size: 15px; white-space: nowrap; width: 100%; line-height: 1.25;
   }
   .delta .pct{ font-size: 12.5px; color: var(--ink-faint); letter-spacing: 0.02em; }
+  .delta .pct.good{ color: var(--green-deep); font-weight: 600; }
+  .delta .pct.warn{ color: var(--warn); font-weight: 600; }
+  .delta .pct.bad{ color: var(--bad); font-weight: 600; }
   .delta.up{ color: var(--green-deep); font-weight: 600; }
   .delta.down{ color: var(--ink-muted); }
   .delta.flat{ color: var(--ink-faint); }
@@ -462,7 +467,12 @@
     el.appendChild(main);
     if(pct !== null && pct !== undefined){
       const p = document.createElement('span');
-      p.className = 'pct';
+      // >= 1 % beze změny, pod 1 % oranžová, pod 0,5 % (a poklesy) červená
+      let cls = 'pct';
+      if(pct < 0.5) cls += ' bad';
+      else if(pct < 1) cls += ' warn';
+      else cls += ' good';
+      p.className = cls;
       p.textContent = fmtPct(pct);
       el.appendChild(p);
     }
