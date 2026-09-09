@@ -1,6 +1,6 @@
 # IG Tracker - přehled sledujících
 
-_Poslední aktualizace: 2026-09-01_
+_Poslední aktualizace: 2026-09-09_
 
 | Účet | Typ | Datum | Sledující | Změna |
 |---|---|---|---|---|
