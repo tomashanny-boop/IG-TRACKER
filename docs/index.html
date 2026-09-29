@@ -246,6 +246,11 @@
   .stats dd small { font-size: 12.5px; font-weight: 500; color: var(--text-3); }
 
   .split { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+  /* Levý blok se na desktopu srovná na výšku tabulky (výšku nastaví JS);
+     přebytek se rozdělí rovnoměrně mezi řádky žebříčku. */
+  .summary.is-matched { display: flex; flex-direction: column; }
+  .summary.is-matched .split { flex: 1 1 auto; display: flex; flex-direction: column; }
+  .summary.is-matched .ranks { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: space-between; }
   .split-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 2px 12px; }
   .hint { margin: 0; font-size: 12.5px; color: var(--text-3); }
 
@@ -856,7 +861,7 @@
       line.append(link);
       const sub = document.createElement('span');
       sub.className = 'sub';
-      sub.textContent = acc._postsTotal === null || acc._postsTotal === undefined ? 'bez údaje o příspěvcích' : fmtNum(acc._postsTotal) + ' ' + postsWord(acc._postsTotal) + ' celkem';
+      sub.textContent = acc._postsTotal === null || acc._postsTotal === undefined ? 'bez údaje o příspěvcích' : fmtNum(acc._postsTotal) + ' ' + postsWord(acc._postsTotal);
       if (isOwn) {
         const o = document.createElement('span');
         o.className = 'own-tag';
@@ -1117,7 +1122,33 @@
     });
   });
 
+  /* Výška levého bloku = výška tabulky se zavřenými řádky (rozbalený detail se nepočítá).
+     Jen na širokém rozložení a jen když je rozdíl malý, aby žebříček nebyl řídký. */
+  const summaryEl = document.querySelector('aside.summary');
+  const tablePanel = rowsEl.closest('.panel');
+  const wide = window.matchMedia('(min-width: 1000px)');
+  function matchHeights() {
+    if (!summaryEl || !tablePanel) return;
+    summaryEl.style.height = '';
+    summaryEl.classList.remove('is-matched');
+    if (!wide.matches) return;
+    const natural = summaryEl.getBoundingClientRect().height;
+    let target = tablePanel.getBoundingClientRect().height;
+    rowsEl.querySelectorAll('.acct.is-open .detail').forEach(d => {
+      if (d.hidden) return;
+      const cs = getComputedStyle(d);
+      target -= d.getBoundingClientRect().height + parseFloat(cs.marginTop) + parseFloat(cs.marginBottom);
+    });
+    if (target > natural && target - natural <= natural * 0.2) {
+      summaryEl.classList.add('is-matched');
+      summaryEl.style.height = target + 'px';
+    }
+  }
+
   renderRows();
+  matchHeights();
+  window.addEventListener('resize', () => requestAnimationFrame(matchHeights));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(matchHeights);
 })();
 </script>
 </body>
