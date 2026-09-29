@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-09 09:36 UTC",
+  "generated_at": "2026-09-29 12:45 UTC",
   "accounts": [
     {
       "username": "cmcarchitects",
@@ -19,10 +19,15 @@
           "date": "2026-09-01",
           "followers": 2154,
           "posts": 92
+        },
+        {
+          "date": "2026-10-01",
+          "followers": 2182,
+          "posts": 106
         }
       ],
-      "latest": 2154,
-      "delta": 37
+      "latest": 2182,
+      "delta": 28
     },
     {
       "username": "a69_architekti",
@@ -42,10 +47,15 @@
           "date": "2026-09-01",
           "followers": 2418,
           "posts": 245
+        },
+        {
+          "date": "2026-10-01",
+          "followers": 2534,
+          "posts": 252
         }
       ],
-      "latest": 2418,
-      "delta": 56
+      "latest": 2534,
+      "delta": 116
     },
     {
       "username": "a8000.cz",
@@ -65,10 +75,15 @@
           "date": "2026-09-01",
           "followers": 4712,
           "posts": 459
+        },
+        {
+          "date": "2026-10-01",
+          "followers": 4755,
+          "posts": 462
         }
       ],
-      "latest": 4712,
-      "delta": 38
+      "latest": 4755,
+      "delta": 43
     },
     {
       "username": "adns.architekti",
@@ -88,10 +103,15 @@
           "date": "2026-09-01",
           "followers": 1415,
           "posts": 35
+        },
+        {
+          "date": "2026-10-01",
+          "followers": 1415,
+          "posts": 35
         }
       ],
       "latest": 1415,
-      "delta": -3
+      "delta": 0
     },
     {
       "username": "adr_architects",
@@ -111,10 +131,15 @@
           "date": "2026-09-01",
           "followers": 3274,
           "posts": 65
+        },
+        {
+          "date": "2026-10-01",
+          "followers": 3292,
+          "posts": 55
         }
       ],
-      "latest": 3274,
-      "delta": 38
+      "latest": 3292,
+      "delta": 18
     },
     {
       "username": "atelier_ra15",
@@ -134,10 +159,15 @@
           "date": "2026-09-01",
           "followers": 1773,
           "posts": 44
+        },
+        {
+          "date": "2026-10-01",
+          "followers": 1806,
+          "posts": 50
         }
       ],
-      "latest": 1773,
-      "delta": 86
+      "latest": 1806,
+      "delta": 33
     },
     {
       "username": "chybikkristof",
@@ -157,10 +187,15 @@
           "date": "2026-09-01",
           "followers": 19662,
           "posts": 289
+        },
+        {
+          "date": "2026-10-01",
+          "followers": 20105,
+          "posts": 265
         }
       ],
-      "latest": 19662,
-      "delta": 262
+      "latest": 20105,
+      "delta": 443
     },
     {
       "username": "dam.architekti",
@@ -180,10 +215,15 @@
           "date": "2026-09-01",
           "followers": 2736,
           "posts": 150
+        },
+        {
+          "date": "2026-10-01",
+          "followers": 2753,
+          "posts": 150
         }
       ],
-      "latest": 2736,
-      "delta": 2
+      "latest": 2753,
+      "delta": 17
     },
     {
       "username": "editarchitects",
@@ -203,10 +243,15 @@
           "date": "2026-09-01",
           "followers": 7767,
           "posts": 362
+        },
+        {
+          "date": "2026-10-01",
+          "followers": 7784,
+          "posts": 362
         }
       ],
-      "latest": 7767,
-      "delta": 146
+      "latest": 7784,
+      "delta": 17
     },
     {
       "username": "jakub_cigler_architekti",
@@ -226,10 +271,15 @@
           "date": "2026-09-01",
           "followers": 2102,
           "posts": 89
+        },
+        {
+          "date": "2026-10-01",
+          "followers": 2173,
+          "posts": 91
         }
       ],
-      "latest": 2102,
-      "delta": 29
+      "latest": 2173,
+      "delta": 71
     },
     {
       "username": "ova_architekti",
@@ -249,10 +299,15 @@
           "date": "2026-09-01",
           "followers": 7094,
           "posts": 157
+        },
+        {
+          "date": "2026-10-01",
+          "followers": 7121,
+          "posts": 159
         }
       ],
-      "latest": 7094,
-      "delta": 11
+      "latest": 7121,
+      "delta": 27
     },
     {
       "username": "qartaarch",
@@ -272,10 +327,15 @@
           "date": "2026-09-01",
           "followers": 2111,
           "posts": 113
+        },
+        {
+          "date": "2026-10-01",
+          "followers": 2124,
+          "posts": 114
         }
       ],
-      "latest": 2111,
-      "delta": 21
+      "latest": 2124,
+      "delta": 13
     },
     {
       "username": "studio_perspektiv",
@@ -295,10 +355,15 @@
           "date": "2026-09-01",
           "followers": 6740,
           "posts": 437
+        },
+        {
+          "date": "2026-10-01",
+          "followers": 7140,
+          "posts": 441
         }
       ],
-      "latest": 6740,
-      "delta": 714
+      "latest": 7140,
+      "delta": 400
     }
   ]
 }
