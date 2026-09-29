@@ -550,9 +550,9 @@
         <div class="sort" role="group" aria-label="Seřadit účty podle">
           <button type="button" data-sort="latest">Sledující <span class="arrow"></span></button>
           <button type="button" data-sort="delta">Za měsíc <span class="arrow"></span></button>
+          <button type="button" data-sort="pct">Za měsíc v % <span class="arrow"></span></button>
           <button type="button" data-sort="delta3">Za 3 měsíce <span class="arrow"></span></button>
           <button type="button" data-sort="postsmo">Příspěvky <span class="arrow"></span></button>
-          <button type="button" data-sort="name">Název <span class="arrow"></span></button>
         </div>
       </div>
       <div class="thead" aria-hidden="true">
@@ -760,7 +760,7 @@
   });
 
   function sortAccounts() {
-    const val = a => (sortKey === 'latest' ? a.latest : sortKey === 'postsmo' ? a._postsMonth : sortKey === 'delta' ? a._delta : a._delta3);
+    const val = a => (sortKey === 'latest' ? a.latest : sortKey === 'postsmo' ? a._postsMonth : sortKey === 'delta' ? a._delta : sortKey === 'pct' ? a._pct : a._delta3);
     return accounts.slice().sort((a, b) => {
       if (sortKey === 'name') return a.username.localeCompare(b.username, 'cs') * sortDir;
       const va = val(a), vb = val(b);
@@ -805,7 +805,7 @@
       b.setAttribute('aria-pressed', String(on));
       b.querySelector('.arrow').textContent = sortDir === 1 ? '↑' : '↓';
     });
-    document.querySelectorAll('.thead [data-col]').forEach(s => s.classList.toggle('is-active', s.dataset.col === sortKey));
+    document.querySelectorAll('.thead [data-col]').forEach(s => s.classList.toggle('is-active', s.dataset.col === (sortKey === 'pct' ? 'delta' : sortKey)));
 
     rowsEl.innerHTML = '';
     sortAccounts().forEach(acc => {
