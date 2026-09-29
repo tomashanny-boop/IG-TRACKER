@@ -39,6 +39,10 @@ def init_db():
     cols = [r[1] for r in conn.execute("PRAGMA table_info(snapshots)").fetchall()]
     if "posts" not in cols:
         conn.execute("ALTER TABLE snapshots ADD COLUMN posts INTEGER")
+    # new_posts = počet příspěvků publikovaných v předchozím kalendářním měsíci
+    # (spočítané podle data publikace, ne rozdílem celkového počtu na profilu)
+    if "new_posts" not in cols:
+        conn.execute("ALTER TABLE snapshots ADD COLUMN new_posts INTEGER")
 
     conn.commit()
     conn.close()
@@ -56,15 +60,16 @@ def ensure_account(username: str, acc_type: str):
 
 
 def insert_snapshot(username: str, followers: int, snapshot_date: str = None,
-                    posts: int = None):
+                    posts: int = None, new_posts: int = None):
     snapshot_date = snapshot_date or date.today().isoformat()
     conn = get_connection()
     conn.execute(
-        "INSERT INTO snapshots (username, snapshot_date, followers, posts) "
-        "VALUES (?, ?, ?, ?) "
+        "INSERT INTO snapshots (username, snapshot_date, followers, posts, new_posts) "
+        "VALUES (?, ?, ?, ?, ?) "
         "ON CONFLICT(username, snapshot_date) DO UPDATE SET "
-        "followers=excluded.followers, posts=excluded.posts",
-        (username, snapshot_date, followers, posts),
+        "followers=excluded.followers, posts=excluded.posts, "
+        "new_posts=COALESCE(excluded.new_posts, snapshots.new_posts)",
+        (username, snapshot_date, followers, posts, new_posts),
     )
     conn.commit()
     conn.close()

@@ -49,8 +49,9 @@ def main():
             if isinstance(vals, dict):
                 followers = vals.get("followers")
                 posts = vals.get("posts")
+                new_posts = vals.get("new_posts")
             else:
-                followers, posts = vals, None
+                followers, posts, new_posts = vals, None, None
 
             if followers is None:
                 print(f"[PŘESKOČENO] {snapshot_date} {username}: chybí followers")
@@ -58,7 +59,8 @@ def main():
 
             db.ensure_account(username, types.get(username, "foreign"))
             db.insert_snapshot(username, int(followers), snapshot_date,
-                               posts=int(posts) if posts is not None else None)
+                               posts=int(posts) if posts is not None else None,
+                               new_posts=int(new_posts) if new_posts is not None else None)
             total += 1
 
     print(f"Načteno {total} ručně zapsaných záznamů.")

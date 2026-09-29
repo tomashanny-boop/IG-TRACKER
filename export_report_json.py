@@ -23,13 +23,14 @@ def main():
     for username, acc_type in accounts:
         conn = db.get_connection()
         rows = conn.execute(
-            "SELECT snapshot_date, followers, posts FROM snapshots "
+            "SELECT snapshot_date, followers, posts, new_posts FROM snapshots "
             "WHERE username = ? ORDER BY snapshot_date ASC",
             (username,),
         ).fetchall()
         conn.close()
 
-        history = [{"date": r[0], "followers": r[1], "posts": r[2]} for r in rows]
+        history = [{"date": r[0], "followers": r[1], "posts": r[2], "new_posts": r[3]}
+                   for r in rows]
         latest = history[-1]["followers"] if history else None
         delta = None
         if len(history) >= 2:
