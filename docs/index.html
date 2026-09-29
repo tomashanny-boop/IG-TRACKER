@@ -263,15 +263,32 @@
     cursor: pointer;
     transition: background-color .15s;
   }
-  .rk:hover, .rk.is-current { background: var(--surface-2); }
+  .rk { position: relative; }
+  .rk:hover { background: var(--surface-2); }
+  /* vybraný účet: výrazné pozadí, obrys a svislý pruh vlevo */
+  .rk.is-current {
+    background: var(--surface-3);
+    box-shadow: inset 0 0 0 1px var(--line-2);
+  }
+  .rk.is-current::before {
+    content: ""; position: absolute; left: 0; top: 8px; bottom: 8px;
+    width: 3px; border-radius: 0 3px 3px 0; background: var(--text-2);
+  }
+  .rk.is-own.is-current { background: var(--own-wash-2); box-shadow: inset 0 0 0 1px rgba(57, 135, 229, 0.45); }
+  .rk.is-own.is-current::before { background: var(--own); }
+  .rk.is-current .rk-name { color: var(--text); font-weight: 600; }
   .rk-name { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 13.5px; color: var(--text-2); }
   .rk-name span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .sw { flex: none; width: 8px; height: 8px; border-radius: 2px; background: var(--bar-muted); }
-  .rk-pct { min-width: 58px; text-align: right; font-size: 13.5px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .rk-pct { min-width: 58px; text-align: right; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; justify-self: end; }
+  .rk-pct.chip { min-width: 0; padding: 2px 8px; border-radius: 999px; }
   .rk-abs { min-width: 46px; text-align: right; font-size: 12.5px; color: var(--text-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
   .rk-bar { grid-column: 1 / -1; height: 4px; padding-left: 16px; }
   .rk-fill { display: block; width: 0; height: 100%; border-radius: 0 2px 2px 0; background: var(--bar-muted); transition: width .35s ease; }
   .rk.is-own .rk-name { color: var(--text); font-weight: 600; }
+  .rk-fill.good { background: rgba(63, 185, 127, 0.55); }
+  .rk-fill.warn { background: rgba(224, 163, 58, 0.55); }
+  .rk-fill.bad { background: rgba(239, 123, 123, 0.55); }
   .rk.is-own .sw, .rk.is-own .rk-fill { background: var(--own); }
   .rk.is-none .rk-pct { color: var(--text-3); font-weight: 500; }
 
@@ -337,8 +354,19 @@
   .acct-row:hover { background: var(--surface-2); }
   .acct.is-own .acct-row { background: var(--own-wash); }
   .acct.is-own .acct-row:hover { background: var(--own-wash-2); }
-  .acct.is-open .acct-row { background: var(--surface-2); }
-  .acct.is-own.is-open .acct-row { background: var(--own-wash-2); }
+  .acct.is-open .acct-row { background: var(--surface-3); box-shadow: inset 0 0 0 1px var(--line-2), inset 3px 0 0 var(--text-2); }
+  .acct.is-own.is-open .acct-row { background: var(--own-wash-2); box-shadow: inset 0 0 0 1px rgba(57, 135, 229, 0.45), inset 3px 0 0 var(--own); }
+  @keyframes rowFlash {
+    0% { box-shadow: inset 0 0 0 2px var(--focus), inset 3px 0 0 var(--text-2); }
+    100% { box-shadow: inset 0 0 0 1px var(--line-2), inset 3px 0 0 var(--text-2); }
+  }
+  @keyframes rowFlashOwn {
+    0% { box-shadow: inset 0 0 0 2px var(--own-text), inset 3px 0 0 var(--own); }
+    100% { box-shadow: inset 0 0 0 1px rgba(57, 135, 229, 0.45), inset 3px 0 0 var(--own); }
+  }
+  .acct.is-flash .acct-row { animation: rowFlash 1.4s ease-out; }
+  .acct.is-own.is-flash .acct-row { animation-name: rowFlashOwn; }
+  @media (prefers-reduced-motion: reduce) { .acct.is-flash .acct-row { animation: none; } }
 
   .acct-hit {
     position: absolute;
@@ -698,7 +726,12 @@
     b.innerHTML = '<span class="rk-name"><i class="sw" aria-hidden="true"></i><span></span></span><span class="rk-pct"></span><span class="rk-abs"></span><span class="rk-bar" aria-hidden="true"><span class="rk-fill"></span></span>';
     b.querySelector('.rk-name span').textContent = a.username;
     const hasPct = a._pct !== null && a._pct !== undefined;
-    b.querySelector('.rk-pct').textContent = hasPct ? fmtPct(a._pct) : '—';
+    const pctEl = b.querySelector('.rk-pct');
+    pctEl.textContent = hasPct ? fmtPct(a._pct) : '—';
+    if (hasPct) {
+      pctEl.classList.add('chip', pctClass(a._pct));
+      b.querySelector('.rk-fill').classList.add(pctClass(a._pct));
+    }
     b.querySelector('.rk-abs').textContent = a._delta === null ? '' : signed(a._delta);
     b.querySelector('.rk-fill').style.width = (hasPct && maxPct > 0 ? Math.max(0, a._pct) / maxPct * 100 : 0) + '%';
     b.setAttribute('aria-label', a.username + (a === own ? ' (váš účet)' : '') + ': ' +
@@ -898,7 +931,13 @@
   function reveal(user) {
     if (openUser !== user) toggle(user);
     const li = [...rowsEl.children].find(x => x.dataset.user === user);
-    if (li) li.scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth', block: 'nearest' });
+    if (li) {
+      li.scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth', block: 'center' });
+      li.classList.remove('is-flash');
+      void li.offsetWidth; // restart animace při opakovaném kliknutí
+      li.classList.add('is-flash');
+      setTimeout(() => li.classList.remove('is-flash'), 1500);
+    }
   }
 
   /* ---------- Detail účtu ---------- */
