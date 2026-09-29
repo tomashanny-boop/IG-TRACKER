@@ -4,92 +4,187 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Instagram Tracker — ruční zápis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&display=swap">
 <style>
-  :root{
-    --paper:#FFFFFF; --line:#DEDDDA; --line-strong:#111111;
-    --ink:#111111; --ink-muted:#6E6E6C; --ink-faint:#A6A5A2;
+  /* Stejný vizuální jazyk jako přehled (index.html): tmavý podklad, Instrument Sans, zaoblené panely. */
+  :root {
+    color-scheme: dark;
+    --bg: #0b0f14;
+    --surface: #13171e;
+    --surface-2: #1c2128;
+    --inset: #0f1318;
+    --line: #252a32;
+    --line-2: #323841;
+    --text: #eef0f3;
+    --text-2: #b2b8c1;
+    --text-3: #808791;
+    --focus: #c9d6ea;
+    --own: #3987e5;
+    --own-text: #6aa8f2;
+    --own-wash-2: rgba(57, 135, 229, 0.14);
+    --good: #3fb97f;
+    --r-panel: 18px;
+    --r-ctl: 9px;
+    --font: "Instrument Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   }
-  *{ box-sizing:border-box; }
-  body{
-    margin:0; min-height:100vh; background:#fff; color:var(--ink);
-    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
-    -webkit-font-smoothing:antialiased;
-  }
-  .wrap{ max-width:900px; margin:0 auto; padding:28px 20px 80px; }
-  .eyebrow{
-    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px;
-    letter-spacing:.18em; text-transform:uppercase; color:var(--ink-muted); margin:0 0 10px;
-  }
-  h1{ font-weight:700; font-size:clamp(26px,4vw,36px); letter-spacing:-.02em; margin:0 0 8px; }
-  .sub{ color:var(--ink-muted); font-size:15px; margin:0 0 28px; max-width:60ch; }
-  a{ color:var(--ink); }
 
-  .panel{ border:1px solid var(--line-strong); background:var(--paper); margin-bottom:20px; }
-  .panel-head{
-    padding:18px 24px; border-bottom:1px solid var(--line);
-    display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  .panel-head h2{ font-size:15px; font-weight:600; margin:0; }
-  .panel-body{ padding:20px 24px; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  ::selection { background: var(--own); color: #fff; }
+  .hidden { display: none; }
 
-  .datefield{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
-  label{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px;
-    letter-spacing:.1em; text-transform:uppercase; color:var(--ink-muted); }
-  input[type="date"], input[type="number"]{
-    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:14px;
-    padding:8px 10px; border:1px solid var(--line); background:#fff; color:var(--ink);
-  }
-  input[type="number"]{ width:100%; text-align:right; }
-  input:focus{ outline:2px solid var(--ink); outline-offset:-1px; }
+  .wrap { max-width: 900px; margin: 0 auto; padding-inline: 16px; }
+  @media (min-width: 640px) { .wrap { padding-inline: 28px; } }
 
-  table{ width:100%; border-collapse:collapse; }
-  th{
-    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10px;
-    letter-spacing:.12em; text-transform:uppercase; color:var(--ink-muted);
-    text-align:right; font-weight:400; padding:0 0 10px; border-bottom:1px solid var(--line);
+  /* ---------- Horní lišta ---------- */
+  .top {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(11, 15, 20, 0.84);
+    -webkit-backdrop-filter: blur(14px) saturate(1.15);
+    backdrop-filter: blur(14px) saturate(1.15);
+    border-bottom: 1px solid var(--line);
   }
-  th:first-child{ text-align:left; }
-  td{ padding:10px 0; border-bottom:1px solid var(--line); vertical-align:middle; }
-  td:first-child{ padding-right:16px; }
-  td.numcell{ width:112px; padding-left:12px; }
-  .acct{ font-size:14px; }
-  .prev{
-    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px;
-    color:var(--ink-faint); display:block; margin-top:2px;
+  .top-in { max-width: 1240px; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 60px; padding-block: 10px; }
+  .brand { display: flex; align-items: center; gap: 10px; min-width: 0; text-decoration: none; }
+  .brand-mark {
+    flex: none; display: grid; place-items: center;
+    width: 30px; height: 30px; border-radius: 9px;
+    color: var(--own-text); background: var(--own-wash-2);
   }
-  .iglink{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px;
-    color:var(--ink-faint); text-decoration:none; margin-left:6px; }
-  .iglink:hover{ color:var(--ink); text-decoration:underline; }
+  .brand-mark svg { width: 17px; height: 17px; }
+  .brand-name { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+  @media (max-width: 480px) { .brand-name { font-size: 15px; } }
 
-  button{
-    font-family:"Inter",sans-serif; font-size:14px; font-weight:600;
-    padding:11px 20px; border:1px solid var(--ink); background:var(--ink); color:#fff; cursor:pointer;
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    height: 36px; padding: 0 15px; border-radius: 999px;
+    border: 1px solid var(--line-2); background: var(--surface); color: var(--text);
+    font: inherit; font-size: 14px; font-weight: 600;
+    text-decoration: none; white-space: nowrap; cursor: pointer;
+    transition: background-color .15s, border-color .15s;
   }
-  button.secondary{ background:#fff; color:var(--ink); }
-  button:hover{ opacity:.85; }
+  .btn:hover { background: var(--surface-2); border-color: #3d444e; }
+  .btn svg { width: 16px; height: 16px; flex: none; }
+  .btn-primary { background: var(--text); border-color: var(--text); color: var(--bg); }
+  .btn-primary:hover { background: #fff; border-color: #fff; }
 
-  textarea{
-    width:100%; min-height:260px; font-family:"IBM Plex Mono",ui-monospace,monospace;
-    font-size:12px; line-height:1.45; padding:14px; border:1px solid var(--line);
-    background:#FAFAF9; color:var(--ink); resize:vertical;
+  /* ---------- Obsah ---------- */
+  .main { padding-block: 28px 64px; }
+  h1 { font-size: clamp(24px, 4vw, 32px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 8px; text-wrap: balance; }
+  .sub { color: var(--text-2); font-size: 15px; margin: 0 0 24px; max-width: 64ch; }
+  code { font-family: var(--mono); font-size: .88em; background: var(--surface-2); padding: 1px 6px; border-radius: 6px; color: var(--text); }
+
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-panel); margin-bottom: 16px; }
+  .panel-head {
+    padding: 16px 20px 14px; border-bottom: 1px solid var(--line);
+    display: flex; align-items: baseline; justify-content: space-between; gap: 6px 12px; flex-wrap: wrap;
   }
-  .steps{ font-size:14px; color:var(--ink-muted); line-height:1.6; margin:0 0 16px; padding-left:20px; }
-  .steps code{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12.5px;
-    background:#F2F2F0; padding:1px 5px; color:var(--ink); }
-  .note{ font-size:13px; color:var(--ink-muted); margin:14px 0 0; }
-  .backlink{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px;
-    color:var(--ink-muted); text-decoration:none; }
-  .hidden{ display:none; }
+  .panel-head h2 { font-size: 16px; font-weight: 600; margin: 0; }
+  .panel-body { padding: 18px 20px 20px; }
+
+  .datefield { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  label { font-size: 13px; font-weight: 600; color: var(--text-2); }
+  input[type="date"], input[type="number"] {
+    font: inherit; font-size: 15px; font-variant-numeric: tabular-nums;
+    height: 38px; padding: 0 11px;
+    border: 1px solid var(--line-2); border-radius: var(--r-ctl);
+    background: var(--inset); color: var(--text);
+    transition: border-color .15s;
+  }
+  input[type="number"] { width: 100%; text-align: right; }
+  input::placeholder { color: var(--text-3); }
+  input:hover { border-color: #3d444e; }
+  input:focus { outline: none; border-color: var(--own); box-shadow: 0 0 0 3px var(--own-wash-2); }
+
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    font-size: 11.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--text-3); text-align: right; padding: 0 0 10px; border-bottom: 1px solid var(--line);
+    vertical-align: bottom;
+  }
+  th:first-child { text-align: left; }
+  td { padding: 11px 0; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: 0; padding-bottom: 0; }
+  td:first-child { padding-right: 16px; }
+  td.numcell { width: 112px; padding-left: 10px; }
+  .acct { font-size: 15px; font-weight: 600; }
+  .prev { font-size: 12.5px; color: var(--text-3); display: block; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .iglink { font-size: 12.5px; color: var(--text-3); text-decoration: none; margin-left: 6px; }
+  .iglink:hover { color: var(--own-text); }
+  .empty { padding: 24px 0; color: var(--text-3); }
+
+  /* Na telefonu: jméno účtu přes celou šířku, pod ním tři pole se štítky */
+  @media (max-width: 600px) {
+    .panel-head, .panel-body { padding-inline: 16px; }
+    table, tbody { display: block; }
+    thead { display: none; }
+    tbody tr {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;
+      padding: 12px 0; border-bottom: 1px solid var(--line);
+    }
+    tbody tr:first-child { padding-top: 0; }
+    tbody tr:last-child { border-bottom: 0; padding-bottom: 0; }
+    td, tbody tr:last-child td { display: block; padding: 0; border: 0; }
+    td:first-child { grid-column: 1 / -1; padding: 0 0 2px; }
+    td.numcell { width: auto; padding: 0; }
+    td.numcell::before {
+      display: block; margin-bottom: 4px;
+      font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--text-3);
+    }
+    td.numcell:nth-child(2)::before { content: "Sledující"; }
+    td.numcell:nth-child(3)::before { content: "Celkem"; }
+    td.numcell:nth-child(4)::before { content: "Nové"; }
+    td.empty { grid-column: 1 / -1; }
+  }
+
+  textarea {
+    width: 100%; min-height: 260px;
+    font-family: var(--mono); font-size: 12.5px; line-height: 1.5;
+    padding: 14px; border: 1px solid var(--line-2); border-radius: var(--r-ctl);
+    background: var(--inset); color: var(--text-2); resize: vertical;
+  }
+  textarea:focus { outline: none; border-color: var(--own); }
+  .steps { font-size: 14.5px; color: var(--text-2); line-height: 1.65; margin: 0 0 16px; padding-left: 20px; }
+  .steps strong { color: var(--text); }
+  .note { font-size: 13px; color: var(--text-3); margin: 14px 0 0; }
+  .note.ok { color: var(--good); }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <a class="backlink" href="./">← zpět na přehled</a>
-  <p class="eyebrow" style="margin-top:18px;">Instagram Tracker / ruční zápis</p>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="./">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l5-5 4 3.5L20 8"/><path d="M15 8h5v5"/></svg></span>
+      <span class="brand-name">Instagram Followers Tracker</span>
+    </a>
+    <a class="btn" href="./">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 6l-6 6 6 6"/></svg>
+      <span>Přehled</span>
+    </a>
+  </div>
+</header>
+
+<main class="wrap main">
   <h1>Zápis měsíčních hodnot</h1>
   <p class="sub">Otevřete si každý profil a opište počet sledujících a počet příspěvků. Do „Nové přísp.“ napište, kolik příspěvků účet v mřížce publikoval za předchozí kalendářní měsíc (podle data u příspěvků, připnuté staré příspěvky nepočítejte). Pokud pro dané datum už některou hodnotu máte, můžete pole nechat prázdné. Formulář z toho vygeneruje text, který jen vložíte do souboru <code>manual_entries.json</code> na GitHubu — web se pak aktualizuje sám.</p>
 
-  <div class="panel">
+  <section class="panel">
     <div class="panel-head"><h2>1. Datum měření</h2></div>
     <div class="panel-body">
       <div class="datefield">
@@ -98,9 +193,9 @@
         <span class="note" style="margin:0;">Měří se vždy 1. den v měsíci.</span>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="panel">
+  <section class="panel">
     <div class="panel-head">
       <h2>2. Hodnoty</h2>
       <span class="note" style="margin:0;">Stačí vyplnit, co je nové — chybějící hodnota se převezme z dřívějšího zápisu.</span>
@@ -113,12 +208,12 @@
         <tbody id="rows"></tbody>
       </table>
     </div>
-  </div>
+  </section>
 
-  <div class="panel">
+  <section class="panel">
     <div class="panel-head"><h2>3. Vygenerovat</h2></div>
     <div class="panel-body">
-      <button id="gen" type="button">Vygenerovat text</button>
+      <button id="gen" type="button" class="btn btn-primary">Vygenerovat text</button>
       <div id="output" class="hidden" style="margin-top:20px;">
         <ol class="steps">
           <li>Zkopírujte celý text níže.</li>
@@ -127,15 +222,15 @@
           <li>Dole <strong>Commit changes</strong> → potvrdit.</li>
         </ol>
         <textarea id="out" readonly></textarea>
-        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
-          <button id="copy" type="button" class="secondary">Zkopírovat do schránky</button>
-          <span class="note" id="copied" style="margin:0; align-self:center;"></span>
+        <div style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+          <button id="copy" type="button" class="btn">Zkopírovat do schránky</button>
+          <span class="note ok" id="copied" style="margin:0;"></span>
         </div>
         <p class="note">Po uložení na GitHubu se do dvou minut přepočítá i webový přehled.</p>
       </div>
     </div>
-  </div>
-</div>
+  </section>
+</main>
 
 <script>
 (async function(){
@@ -168,7 +263,7 @@
   }catch(e){ /* fallback níže */ }
 
   if(accounts.length === 0){
-    rowsEl.innerHTML = '<tr><td colspan="4" style="padding:24px 0; color:#6E6E6C;">Seznam účtů se nepodařilo načíst.</td></tr>';
+    rowsEl.innerHTML = '<tr><td colspan="4" class="empty">Seznam účtů se nepodařilo načíst.</td></tr>';
     return;
   }
 
