@@ -584,17 +584,32 @@
     if (!prev) return null;
     return ((h[h.length - 1].followers - prev) / prev) * 100;
   }
-  function postsPerMonth(h) {
-    if (!h || h.length < 2) return null;
-    const a = h[h.length - 2].posts, b = h[h.length - 1].posts;
-    if (a === null || a === undefined || b === null || b === undefined) return null;
+  /* Příspěvky vydané za měsíc před zápisem i.
+     Přednost má new_posts (spočítáno podle data publikace v mřížce profilu).
+     Rozdíl celkového počtu na profilu je jen záloha: zkresluje ho archivace,
+     mazání, kolaborace i reels skryté z mřížky. */
+  const isNum = v => v !== null && v !== undefined;
+  function monthPosts(h, i) {
+    if (!h || i < 0 || i >= h.length) return null;
+    if (isNum(h[i].new_posts)) return h[i].new_posts;
+    if (i < 1) return null;
+    const a = h[i - 1].posts, b = h[i].posts;
+    if (!isNum(a) || !isNum(b)) return null;
     return Math.max(0, b - a);
   }
+  function postsPerMonth(h) {
+    if (!h || !h.length) return null;
+    return monthPosts(h, h.length - 1);
+  }
   function postsAvg(h, months) {
-    if (!h || h.length < months + 1) return null;
-    const a = h[h.length - 1 - months].posts, b = h[h.length - 1].posts;
-    if (a === null || a === undefined || b === null || b === undefined) return null;
-    return Math.max(0, b - a) / months;
+    if (!h || h.length < months) return null;
+    let sum = 0;
+    for (let i = h.length - months; i < h.length; i++) {
+      const v = monthPosts(h, i);
+      if (v === null) return null;
+      sum += v;
+    }
+    return sum / months;
   }
 
   accounts.forEach(a => {
@@ -1000,11 +1015,10 @@
     const h = acc.history;
     const gains = [];
     for (let i = 1; i < h.length; i++) {
-      const a = h[i - 1].posts, b = h[i].posts;
       gains.push({
         date: h[i].date,
         value: h[i].followers - h[i - 1].followers,
-        posts: a === null || a === undefined || b === null || b === undefined ? null : Math.max(0, b - a),
+        posts: monthPosts(h, i),
       });
     }
     if (!gains.length) { el.innerHTML = '<p class="plot-empty">Přírůstek se zobrazí od druhého měsíce měření.</p>'; el.removeAttribute('aria-label'); return; }

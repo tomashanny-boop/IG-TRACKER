@@ -51,7 +51,7 @@
   th:first-child{ text-align:left; }
   td{ padding:10px 0; border-bottom:1px solid var(--line); vertical-align:middle; }
   td:first-child{ padding-right:16px; }
-  td.numcell{ width:130px; padding-left:12px; }
+  td.numcell{ width:112px; padding-left:12px; }
   .acct{ font-size:14px; }
   .prev{
     font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px;
@@ -87,7 +87,7 @@
   <a class="backlink" href="./">← zpět na přehled</a>
   <p class="eyebrow" style="margin-top:18px;">Instagram Tracker / ruční zápis</p>
   <h1>Zápis měsíčních hodnot</h1>
-  <p class="sub">Otevřete si každý profil a opište počet sledujících a počet příspěvků. Pokud pro dané datum už některou hodnotu máte, můžete pole nechat prázdné. Formulář z toho vygeneruje text, který jen vložíte do souboru <code>manual_entries.json</code> na GitHubu — web se pak aktualizuje sám.</p>
+  <p class="sub">Otevřete si každý profil a opište počet sledujících a počet příspěvků. Do „Nové přísp.“ napište, kolik příspěvků účet v mřížce publikoval za předchozí kalendářní měsíc (podle data u příspěvků, připnuté staré příspěvky nepočítejte). Pokud pro dané datum už některou hodnotu máte, můžete pole nechat prázdné. Formulář z toho vygeneruje text, který jen vložíte do souboru <code>manual_entries.json</code> na GitHubu — web se pak aktualizuje sám.</p>
 
   <div class="panel">
     <div class="panel-head"><h2>1. Datum měření</h2></div>
@@ -108,7 +108,7 @@
     <div class="panel-body">
       <table>
         <thead>
-          <tr><th>Účet</th><th>Sledující</th><th>Příspěvky</th></tr>
+          <tr><th>Účet</th><th>Sledující</th><th>Příspěvky celkem</th><th title="Příspěvky publikované v předchozím kalendářním měsíci">Nové přísp.</th></tr>
         </thead>
         <tbody id="rows"></tbody>
       </table>
@@ -168,7 +168,7 @@
   }catch(e){ /* fallback níže */ }
 
   if(accounts.length === 0){
-    rowsEl.innerHTML = '<tr><td colspan="3" style="padding:24px 0; color:#6E6E6C;">Seznam účtů se nepodařilo načíst.</td></tr>';
+    rowsEl.innerHTML = '<tr><td colspan="4" style="padding:24px 0; color:#6E6E6C;">Seznam účtů se nepodařilo načíst.</td></tr>';
     return;
   }
 
@@ -212,7 +212,15 @@
     inP.placeholder = '—';
     tdP.appendChild(inP);
 
-    tr.appendChild(tdName); tr.appendChild(tdF); tr.appendChild(tdP);
+    const tdN = document.createElement('td');
+    tdN.className = 'numcell';
+    const inN = document.createElement('input');
+    inN.type = 'number'; inN.min = '0'; inN.dataset.user = acc.username; inN.dataset.kind = 'new_posts';
+    inN.placeholder = '—';
+    inN.title = 'Kolik příspěvků publikoval za předchozí měsíc';
+    tdN.appendChild(inN);
+
+    tr.appendChild(tdName); tr.appendChild(tdF); tr.appendChild(tdP); tr.appendChild(tdN);
     rowsEl.appendChild(tr);
   });
 
@@ -229,9 +237,11 @@
       const f = inp.value.trim();
       const pInp = document.querySelector('input[data-kind="posts"][data-user="' + CSS.escape(user) + '"]');
       const pRaw = pInp ? pInp.value.trim() : '';
+      const nInp = document.querySelector('input[data-kind="new_posts"][data-user="' + CSS.escape(user) + '"]');
+      const nRaw = nInp ? nInp.value.trim() : '';
 
       // nic nevyplněno -> účet vynechat
-      if(f === '' && pRaw === '') return;
+      if(f === '' && pRaw === '' && nRaw === '') return;
 
       const prevEntry = (existing[date] && existing[date][user]) || null;
 
@@ -255,7 +265,15 @@
         posts = prevEntry.posts;
       }
 
-      bucket[user] = { followers: followers, posts: posts };
+      // nové příspěvky za předchozí měsíc: nově zadané, jinak zachovat dřívější hodnotu
+      let newPosts = null;
+      if(nRaw !== ''){
+        newPosts = parseInt(nRaw, 10);
+      } else if(prevEntry && prevEntry.new_posts !== null && prevEntry.new_posts !== undefined){
+        newPosts = prevEntry.new_posts;
+      }
+
+      bucket[user] = { followers: followers, posts: posts, new_posts: newPosts };
     });
 
     if(skipped.length){
