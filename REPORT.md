@@ -1,19 +1,19 @@
 # IG Tracker - přehled sledujících
 
-_Poslední aktualizace: 2026-11-01_
+_Poslední aktualizace: 2026-11-02_
 
 | Účet | Typ | Datum | Sledující | Změna |
 |---|---|---|---|---|
-| a69_architekti | foreign | 2026-10-01 | 2534 | +116 |
-| a8000.cz | foreign | 2026-10-01 | 4755 | +43 |
-| adns.architekti | foreign | 2026-10-01 | 1415 | 0 |
-| adr_architects | foreign | 2026-10-01 | 3292 | +18 |
-| atelier_ra15 | foreign | 2026-10-01 | 1806 | +33 |
-| chybikkristof | foreign | 2026-10-01 | 20105 | +443 |
-| cmcarchitects | own | 2026-10-01 | 2182 | +28 |
-| dam.architekti | foreign | 2026-10-01 | 2753 | +17 |
-| editarchitects | foreign | 2026-10-01 | 7784 | +17 |
-| jakub_cigler_architekti | foreign | 2026-10-01 | 2173 | +71 |
-| ova_architekti | foreign | 2026-10-01 | 7121 | +27 |
-| qartaarch | foreign | 2026-10-01 | 2124 | +13 |
-| studio_perspektiv | foreign | 2026-10-01 | 7140 | +400 |
+| a69_architekti | foreign | 2026-11-01 | 2856 | +322 |
+| a8000.cz | foreign | 2026-11-01 | 4831 | +76 |
+| adns.architekti | foreign | 2026-11-01 | 1411 | -4 |
+| adr_architects | foreign | 2026-11-01 | 3464 | +172 |
+| atelier_ra15 | foreign | 2026-11-01 | 1932 | +126 |
+| chybikkristof | foreign | 2026-11-01 | 20809 | +704 |
+| cmcarchitects | own | 2026-11-01 | 2226 | +44 |
+| dam.architekti | foreign | 2026-11-01 | 2773 | +20 |
+| editarchitects | foreign | 2026-11-01 | 7960 | +176 |
+| jakub_cigler_architekti | foreign | 2026-11-01 | 2241 | +68 |
+| ova_architekti | foreign | 2026-11-01 | 7403 | +282 |
+| qartaarch | foreign | 2026-11-01 | 2157 | +33 |
+| studio_perspektiv | foreign | 2026-11-01 | 7516 | +376 |
