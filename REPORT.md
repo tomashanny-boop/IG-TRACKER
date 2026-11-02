@@ -17,3 +17,4 @@ _Poslední aktualizace: 2026-11-02_
 | ova_architekti | foreign | 2026-11-01 | 7403 | +282 |
 | qartaarch | foreign | 2026-11-01 | 2157 | +33 |
 | studio_perspektiv | foreign | 2026-11-01 | 7516 | +376 |
+| upstructure_architects | foreign | 2026-11-01 | 1146 | (první záznam) |

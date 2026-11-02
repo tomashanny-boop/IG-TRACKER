@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02 10:10 UTC",
+  "generated_at": "2026-11-02 14:13 UTC",
   "accounts": [
     {
       "username": "cmcarchitects",
@@ -494,6 +494,20 @@
       ],
       "latest": 7516,
       "delta": 376
+    },
+    {
+      "username": "upstructure_architects",
+      "type": "foreign",
+      "history": [
+        {
+          "date": "2026-11-01",
+          "followers": 1146,
+          "posts": 161,
+          "new_posts": 9
+        }
+      ],
+      "latest": 1146,
+      "delta": null
     }
   ]
 }
