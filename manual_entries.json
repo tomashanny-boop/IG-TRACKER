@@ -209,7 +209,7 @@
     "a69_architekti": {
       "followers": 2534,
       "posts": 252,
-      "new_posts": 7
+      "new_posts": 8
     },
     "a8000.cz": {
       "followers": 4755,
@@ -219,12 +219,12 @@
     "adns.architekti": {
       "followers": 1415,
       "posts": 35,
-      "new_posts": 0
+      "new_posts": 1
     },
     "adr_architects": {
       "followers": 3292,
       "posts": 55,
-      "new_posts": 3
+      "new_posts": 6
     },
     "atelier_ra15": {
       "followers": 1806,
@@ -234,7 +234,7 @@
     "chybikkristof": {
       "followers": 20105,
       "posts": 265,
-      "new_posts": 11
+      "new_posts": 12
     },
     "dam.architekti": {
       "followers": 2753,
@@ -265,6 +265,73 @@
       "followers": 7140,
       "posts": 441,
       "new_posts": 6
+    }
+  },
+  "2026-11-01": {
+    "cmcarchitects": {
+      "followers": 2226,
+      "posts": 108,
+      "new_posts": 6
+    },
+    "a8000.cz": {
+      "followers": 4831,
+      "posts": 469,
+      "new_posts": 8
+    },
+    "a69_architekti": {
+      "followers": 2856,
+      "posts": 263,
+      "new_posts": 10
+    },
+    "atelier_ra15": {
+      "followers": 1932,
+      "posts": 55,
+      "new_posts": 5
+    },
+    "qartaarch": {
+      "followers": 2157,
+      "posts": 118,
+      "new_posts": 5
+    },
+    "studio_perspektiv": {
+      "followers": 7516,
+      "posts": 444,
+      "new_posts": 5
+    },
+    "editarchitects": {
+      "followers": 7960,
+      "posts": 365,
+      "new_posts": 3
+    },
+    "ova_architekti": {
+      "followers": 7403,
+      "posts": 162,
+      "new_posts": 3
+    },
+    "chybikkristof": {
+      "followers": 20809,
+      "posts": 274,
+      "new_posts": 7
+    },
+    "adr_architects": {
+      "followers": 3464,
+      "posts": 60,
+      "new_posts": 3
+    },
+    "dam.architekti": {
+      "followers": 2773,
+      "posts": 135,
+      "new_posts": 0
+    },
+    "jakub_cigler_architekti": {
+      "followers": 2241,
+      "posts": 94,
+      "new_posts": 3
+    },
+    "adns.architekti": {
+      "followers": 1411,
+      "posts": 37,
+      "new_posts": 1
     }
   }
 }
