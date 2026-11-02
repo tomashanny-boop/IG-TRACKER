@@ -12,7 +12,8 @@
     {"username": "adr_architects", "type": "foreign"},
     {"username": "dam.architekti", "type": "foreign"},
     {"username": "jakub_cigler_architekti", "type": "foreign"},
-    {"username": "adns.architekti", "type": "foreign"}
+    {"username": "adns.architekti", "type": "foreign"},
+    {"username": "upstructure_architects", "type": "foreign"}
   ],
 
   "graph_api": {

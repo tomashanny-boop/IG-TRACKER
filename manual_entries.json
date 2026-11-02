@@ -64,6 +64,11 @@
       "followers": 19300,
       "posts": 289,
       "new_posts": 0
+    },
+    "upstructure_architects": {
+      "followers": null,
+      "posts": 143,
+      "new_posts": 6
     }
   },
   "2026-08-01": {
@@ -131,6 +136,11 @@
       "followers": 19400,
       "posts": 292,
       "new_posts": 0
+    },
+    "upstructure_architects": {
+      "followers": null,
+      "posts": 145,
+      "new_posts": 2
     }
   },
   "2026-09-01": {
@@ -198,6 +208,11 @@
       "followers": 1415,
       "posts": 35,
       "new_posts": 0
+    },
+    "upstructure_architects": {
+      "followers": null,
+      "posts": 148,
+      "new_posts": 3
     }
   },
   "2026-10-01": {
@@ -265,6 +280,11 @@
       "followers": 7140,
       "posts": 441,
       "new_posts": 6
+    },
+    "upstructure_architects": {
+      "followers": null,
+      "posts": 152,
+      "new_posts": 4
     }
   },
   "2026-11-01": {
@@ -332,6 +352,11 @@
       "followers": 1411,
       "posts": 37,
       "new_posts": 1
+    },
+    "upstructure_architects": {
+      "followers": 1146,
+      "posts": 161,
+      "new_posts": 9
     }
   }
 }
